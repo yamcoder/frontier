@@ -11,6 +11,7 @@ const state = ref({
   offset: board.offset,
   pointer: board.pointer,
   elements: board.layer.elements,
+  hoverElementId: board.hoverElementId,
 });
 
 onMounted(() => {
@@ -21,6 +22,7 @@ onMounted(() => {
     state.value.offset = board.offset;
     state.value.pointer = board.pointer;
     state.value.elements = board.layer.elements;
+    state.value.hoverElementId = board.hoverElementId;
   });
 });
 </script>
@@ -37,8 +39,9 @@ onMounted(() => {
         <!-- Viewport Offset: {{ state.offset.toString() }} <br /> -->
         Pointer: {{ state.pointer.toString() }} <br />
         Scale: {{ state.scale }} <br />
+        hoverElementId: {{ state.hoverElementId }} <br />
         <ul>
-          <li v-for="element in state.elements">
+          <li v-for="element in state.elements.slice().reverse()">
             {{ JSON.stringify(element) }}
           </li>
         </ul>

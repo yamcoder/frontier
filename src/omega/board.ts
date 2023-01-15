@@ -12,18 +12,20 @@ export class Board {
   viewportCorner: [number, number] = [1000, 1000];
   pointer: [number, number] = [0, 0];
   offset: [number, number] = [0, 0];
+  hoverElementId: number = 0;
 
   #_stateChange$ = new Subject();
   stateChange$ = this.#_stateChange$.asObservable();
 
   constructor() {
     this.layer = new Layer(this.#_ctx, this);
-    this.#_pointerMove$.subscribe();
-    this.#_boardMove$.subscribe();
-    this.#_boardZoom$.subscribe();
+    this.pointerMove$().subscribe();
+    this.dragViewport$().subscribe();
+    this.zoomViewport$().subscribe();
+    this.dragElement$().subscribe();
   }
 
-  get #_pointerMove$() {
+  pointerMove$() {
     const pointerMove$ = fromEvent<PointerEvent>(this.#_canvas, 'pointermove');
 
     return pointerMove$.pipe(
@@ -41,18 +43,86 @@ export class Board {
           Math.round(this.viewportCorner[0] + (event.offsetX / this.scale)),
           Math.round(this.viewportCorner[1] + (event.offsetY / this.scale))
         ] as [number, number];
+
         this.layer.elements.forEach(element => {
           element.checkHover(this.pointer);
         });
-        const topHoverIndex = this.layer.elements.lastIndexOf((element: any) => element.hover);
 
-        this.#_boardDraw();
+        for (let i = this.layer.elements.length - 1; i >= 0; i--) {
+          const element = this.layer.elements[i];
+
+          if (element.isHover) {
+            this.hoverElementId = element.id;
+            break;
+          }
+
+          this.hoverElementId = 0;
+        }
+
+        this.#_drawElements();
+        this.#_drawHoverOutline();
         this.#_stateChange$.next(true);
       })
     );
   }
 
-  get #_boardMove$() {
+  dragElement$() {
+    const pointerDown$ = fromEvent<PointerEvent>(this.#_canvas, 'pointerdown');
+    const pointerMove$ = fromEvent<PointerEvent>(this.#_canvas, 'pointermove');
+    const pointerUp$ = fromEvent<PointerEvent>(this.#_canvas, 'pointerup');
+
+    return pointerDown$.pipe(
+      filter(start => start.button === 0 && this.hoverElementId !== 0),
+      // filter(start => {
+      //   const hoverElement = this.layer.elements.find(el => el.id === this.hoverElementId);
+      //   return !!hoverElement;
+      // }),
+      tap(start => {
+        this.#_canvas.setPointerCapture(start.pointerId);
+      }),
+      map(start => {
+        const hoverElement = this.layer.elements.find(el => el.id === this.hoverElementId);
+
+        return {
+          originalEvent: start,
+          offsetX: start.clientX - (start.target as HTMLCanvasElement).offsetLeft,
+          offsetY: start.clientY - (start.target as HTMLCanvasElement).offsetTop,
+          deltaX: 0,
+          deltaY: 0,
+          element: hoverElement,
+          elementX: hoverElement.x,
+          elementY: hoverElement.y,
+        }
+      }),
+      switchMap(start =>
+        pointerMove$.pipe(
+          map(move => {
+            const deltaX = move.clientX - start.originalEvent.clientX;
+            const deltaY = move.clientY - start.originalEvent.clientY;
+
+            return ({
+              originalEvent: move,
+              offsetX: move.clientX - (move.target as HTMLCanvasElement).offsetLeft,
+              offsetY: move.clientY - (move.target as HTMLCanvasElement).offsetTop,
+              deltaX,
+              deltaY,
+            })
+          }),
+          tap(move => {
+            start.element.setXY([
+              start.elementX + Math.round(move.deltaX / this.scale),
+              start.elementY + Math.round(move.deltaY / this.scale),
+            ]);
+
+            this.#_drawElements();
+            this.#_stateChange$.next(true);
+          }),
+          takeUntil(pointerUp$)
+        )),
+    );
+  }
+
+  dragViewport$() {
     const pointerDown$ = fromEvent<PointerEvent>(this.#_canvas, 'pointerdown');
     const pointerMove$ = fromEvent<PointerEvent>(this.#_canvas, 'pointermove');
     const pointerUp$ = fromEvent<PointerEvent>(this.#_canvas, 'pointerup');
@@ -92,7 +162,7 @@ export class Board {
           }),
           tap(move => {
             this.#_changeCorner(move.viewportCorner);
-            this.#_boardDraw();
+            this.#_drawElements();
             this.#_stateChange$.next(true);
           }),
           takeUntil(pointerUp$)
@@ -100,7 +170,7 @@ export class Board {
     );
   }
 
-  get #_boardZoom$() {
+  zoomViewport$() {
     const wheel$ = fromEvent<WheelEvent>(this.#_canvas, 'wheel');
 
     return wheel$.pipe(
@@ -124,7 +194,7 @@ export class Board {
           this.pointer[0] - Math.round(this.offset[0] / newScale),
           this.pointer[1] - Math.round(this.offset[1] / newScale),
         ]);
-        this.#_boardDraw();
+        this.#_drawElements();
         this.#_stateChange$.next(true);
       })
     )
@@ -135,7 +205,7 @@ export class Board {
     this.#_onBoardResize(element);
     this.#_canvas.width = element.clientWidth;
     this.#_canvas.height = element.clientHeight;
-    this.#_boardDraw();
+    this.#_drawElements();
     element.append(this.#_canvas);
   }
 
@@ -147,15 +217,19 @@ export class Board {
     const resizer = new ResizeObserver(([entry]) => {
       this.#_canvas.width = entry.contentRect.width;
       this.#_canvas.height = entry.contentRect.height;
-      this.#_boardDraw();
+      this.#_drawElements();
     });
     resizer.observe(element);
   }
 
-  #_boardDraw() {
+  #_drawElements() {
     this.#_ctx.clearRect(0, 0, this.#_canvas.width, this.#_canvas.height);
     this.#_ctx.fillStyle = '#F5F5F5';
     this.#_ctx.fillRect(0, 0, this.#_ctx.canvas.width, this.#_ctx.canvas.height);
     this.layer.draw();
+  }
+
+  #_drawHoverOutline() {
+    this.layer.drawOutline(this.hoverElementId);
   }
 }
