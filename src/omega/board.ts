@@ -13,6 +13,7 @@ export class Board {
   pointer: [number, number] = [0, 0];
   offset: [number, number] = [0, 0];
   hoverElementId: number = 0;
+  selectedElement: any = null;
 
   #_stateChange$ = new Subject();
   stateChange$ = this.#_stateChange$.asObservable();
@@ -22,6 +23,7 @@ export class Board {
     this.pointerMove$().subscribe();
     this.dragViewport$().subscribe();
     this.zoomViewport$().subscribe();
+    this.selectElement$().subscribe();
     this.dragElement$().subscribe();
   }
 
@@ -66,6 +68,28 @@ export class Board {
     );
   }
 
+  selectElement$() {
+    const pointerDown$ = fromEvent<PointerEvent>(this.#_canvas, 'pointerdown');
+
+    return pointerDown$.pipe(
+      filter(start => start.button === 0),
+      tap(() => {
+        const element = this.layer.elements.find(el => el.id === this.hoverElementId);
+
+        if (element) {
+          this.selectedElement = element;
+          this.selectedElement.setIsSelected(true);
+        } else {
+          this.selectedElement.setIsSelected(false);
+          this.selectedElement = null;
+        }
+      }),
+      tap(() => {
+        this.#_stateChange$.next(true);
+      })
+    );
+  }
+
   dragElement$() {
     const pointerDown$ = fromEvent<PointerEvent>(this.#_canvas, 'pointerdown');
     const pointerMove$ = fromEvent<PointerEvent>(this.#_canvas, 'pointermove');
@@ -73,10 +97,6 @@ export class Board {
 
     return pointerDown$.pipe(
       filter(start => start.button === 0 && this.hoverElementId !== 0),
-      // filter(start => {
-      //   const hoverElement = this.layer.elements.find(el => el.id === this.hoverElementId);
-      //   return !!hoverElement;
-      // }),
       tap(start => {
         this.#_canvas.setPointerCapture(start.pointerId);
       }),

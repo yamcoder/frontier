@@ -12,6 +12,7 @@ const state = ref({
   pointer: board.pointer,
   elements: board.layer.elements,
   hoverElementId: board.hoverElementId,
+  selectedElement: board.selectedElement,
 });
 
 onMounted(() => {
@@ -23,6 +24,7 @@ onMounted(() => {
     state.value.pointer = board.pointer;
     state.value.elements = board.layer.elements;
     state.value.hoverElementId = board.hoverElementId;
+    state.value.selectedElement = board.selectedElement;
   });
 });
 </script>
@@ -40,6 +42,7 @@ onMounted(() => {
         Pointer: {{ state.pointer.toString() }} <br />
         Scale: {{ state.scale }} <br />
         hoverElementId: {{ state.hoverElementId }} <br />
+        selectedElement: {{ JSON.stringify(state.selectedElement) }} <br />
         <ul>
           <li v-for="element in state.elements.slice().reverse()">
             {{ JSON.stringify(element) }}
