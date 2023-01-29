@@ -4,8 +4,8 @@ import type { BoardMoveEvent } from "./events";
 import { Layer } from "./layer";
 
 export class Board {
-  #_canvas = document.createElement('canvas');
-  #_ctx = this.#_canvas.getContext('2d')!;
+  private canvas = document.createElement('canvas');
+  ctx = this.canvas.getContext('2d')!;
   layer: Layer;
 
   scale = 1;
@@ -15,24 +15,25 @@ export class Board {
   hoverElementId: number = 0;
   selectedElement: any = null;
 
-  #_stateChange$ = new Subject();
-  stateChange$ = this.#_stateChange$.asObservable();
+  _stateChange$ = new Subject();
+  stateChange$ = this._stateChange$.asObservable();
 
   constructor() {
-    this.layer = new Layer(this.#_ctx, this);
+    this.layer = new Layer();
+
+    this.pointerClick$().subscribe();
     this.pointerMove$().subscribe();
     this.dragViewport$().subscribe();
     this.zoomViewport$().subscribe();
-    this.selectElement$().subscribe();
     this.dragElement$().subscribe();
   }
 
   pointerMove$() {
-    const pointerMove$ = fromEvent<PointerEvent>(this.#_canvas, 'pointermove');
+    const pointerMove$ = fromEvent<PointerEvent>(this.canvas, 'pointermove');
 
     return pointerMove$.pipe(
       tap(event => {
-        this.#_canvas.setPointerCapture(event.pointerId);
+        this.canvas.setPointerCapture(event.pointerId);
       }),
       map(move => ({
         originalEvent: move,
@@ -61,44 +62,50 @@ export class Board {
           this.hoverElementId = 0;
         }
 
-        this.#_drawElements();
-        this.#_drawHoverOutline();
-        this.#_stateChange$.next(true);
+        this.drawElements();
+        // this.#_drawHoverOutline();
+        this.drawSelectedOutline();
+        this._stateChange$.next(true);
       })
     );
   }
 
-  selectElement$() {
-    const pointerDown$ = fromEvent<PointerEvent>(this.#_canvas, 'pointerdown');
+  pointerClick$() {
+    const pointerDown$ = fromEvent<PointerEvent>(this.canvas, 'pointerdown');
 
     return pointerDown$.pipe(
       filter(start => start.button === 0),
       tap(() => {
-        const element = this.layer.elements.find(el => el.id === this.hoverElementId);
+        let selectedElement: any = null;
 
-        if (element) {
-          this.selectedElement = element;
-          this.selectedElement.setIsSelected(true);
-        } else {
-          this.selectedElement.setIsSelected(false);
-          this.selectedElement = null;
-        }
+        this.layer.elements.forEach(element => {
+          if (element.id === this.hoverElementId) {
+            element.setIsSelected(true);
+            selectedElement = element;
+          } else {
+            element.setIsSelected(false);
+          }
+        });
+
+        this.selectedElement = selectedElement;
+        this.drawElements();
+        this.drawSelectedOutline();
       }),
       tap(() => {
-        this.#_stateChange$.next(true);
+        this._stateChange$.next(true);
       })
     );
   }
 
   dragElement$() {
-    const pointerDown$ = fromEvent<PointerEvent>(this.#_canvas, 'pointerdown');
-    const pointerMove$ = fromEvent<PointerEvent>(this.#_canvas, 'pointermove');
-    const pointerUp$ = fromEvent<PointerEvent>(this.#_canvas, 'pointerup');
+    const pointerDown$ = fromEvent<PointerEvent>(this.canvas, 'pointerdown');
+    const pointerMove$ = fromEvent<PointerEvent>(this.canvas, 'pointermove');
+    const pointerUp$ = fromEvent<PointerEvent>(this.canvas, 'pointerup');
 
     return pointerDown$.pipe(
       filter(start => start.button === 0 && this.hoverElementId !== 0),
       tap(start => {
-        this.#_canvas.setPointerCapture(start.pointerId);
+        this.canvas.setPointerCapture(start.pointerId);
       }),
       map(start => {
         const hoverElement = this.layer.elements.find(el => el.id === this.hoverElementId);
@@ -134,8 +141,9 @@ export class Board {
               start.elementY + Math.round(move.deltaY / this.scale),
             ]);
 
-            this.#_drawElements();
-            this.#_stateChange$.next(true);
+            this.drawElements();
+            this.drawSelectedOutline();
+            this._stateChange$.next(true);
           }),
           takeUntil(pointerUp$)
         )),
@@ -143,16 +151,14 @@ export class Board {
   }
 
   dragViewport$() {
-    const pointerDown$ = fromEvent<PointerEvent>(this.#_canvas, 'pointerdown');
-    const pointerMove$ = fromEvent<PointerEvent>(this.#_canvas, 'pointermove');
-    const pointerUp$ = fromEvent<PointerEvent>(this.#_canvas, 'pointerup');
-    // const pointerMove$ = pointerMove(this.#_canvas);
-    // const pointerUp$ = pointerUp(this.#_canvas);
+    const pointerDown$ = fromEvent<PointerEvent>(this.canvas, 'pointerdown');
+    const pointerMove$ = fromEvent<PointerEvent>(this.canvas, 'pointermove');
+    const pointerUp$ = fromEvent<PointerEvent>(this.canvas, 'pointerup');
 
     return pointerDown$.pipe(
       filter(start => start.button === 1),
       tap(start => {
-        this.#_canvas.setPointerCapture(start.pointerId);
+        this.canvas.setPointerCapture(start.pointerId);
       }),
       map(start => ({
         originalEvent: start,
@@ -181,9 +187,9 @@ export class Board {
             })
           }),
           tap(move => {
-            this.#_changeCorner(move.viewportCorner);
-            this.#_drawElements();
-            this.#_stateChange$.next(true);
+            this.changeCorner(move.viewportCorner);
+            this.drawElements();
+            this._stateChange$.next(true);
           }),
           takeUntil(pointerUp$)
         )),
@@ -191,7 +197,7 @@ export class Board {
   }
 
   zoomViewport$() {
-    const wheel$ = fromEvent<WheelEvent>(this.#_canvas, 'wheel');
+    const wheel$ = fromEvent<WheelEvent>(this.canvas, 'wheel');
 
     return wheel$.pipe(
       filter(wheel => wheel.ctrlKey),
@@ -210,46 +216,50 @@ export class Board {
           newScale = newScale < 0.2 ? 0.2 : newScale;
           this.scale = +newScale.toFixed(1);
         }
-        this.#_changeCorner([
+        this.changeCorner([
           this.pointer[0] - Math.round(this.offset[0] / newScale),
           this.pointer[1] - Math.round(this.offset[1] / newScale),
         ]);
-        this.#_drawElements();
-        this.#_stateChange$.next(true);
+        this.drawElements();
+        this._stateChange$.next(true);
       })
     )
   }
 
   mount(element: HTMLElement): void {
-    this.#_canvas.style.display = 'block';
-    this.#_onBoardResize(element);
-    this.#_canvas.width = element.clientWidth;
-    this.#_canvas.height = element.clientHeight;
-    this.#_drawElements();
-    element.append(this.#_canvas);
+    this.canvas.style.display = 'block';
+    this.onBoardResize(element);
+    this.canvas.width = element.clientWidth;
+    this.canvas.height = element.clientHeight;
+    this.drawElements();
+    element.append(this.canvas);
   }
 
-  #_changeCorner(viewportCorner: [number, number]) {
+  changeCorner(viewportCorner: [number, number]) {
     this.viewportCorner = viewportCorner;
   }
 
-  #_onBoardResize(element: HTMLElement): void {
+  onBoardResize(element: HTMLElement): void {
     const resizer = new ResizeObserver(([entry]) => {
-      this.#_canvas.width = entry.contentRect.width;
-      this.#_canvas.height = entry.contentRect.height;
-      this.#_drawElements();
+      this.canvas.width = entry.contentRect.width;
+      this.canvas.height = entry.contentRect.height;
+      this.drawElements();
     });
     resizer.observe(element);
   }
 
-  #_drawElements() {
-    this.#_ctx.clearRect(0, 0, this.#_canvas.width, this.#_canvas.height);
-    this.#_ctx.fillStyle = '#F5F5F5';
-    this.#_ctx.fillRect(0, 0, this.#_ctx.canvas.width, this.#_ctx.canvas.height);
+  drawElements() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.fillStyle = '#F5F5F5';
+    this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.layer.draw();
   }
 
-  #_drawHoverOutline() {
-    this.layer.drawOutline(this.hoverElementId);
+  drawHoverOutline() {
+    this.layer.drawHover(this.hoverElementId);
+  }
+
+  drawSelectedOutline() {
+    this.layer.drawSelected(this.selectedElement);
   }
 }

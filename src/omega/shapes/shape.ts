@@ -1,6 +1,7 @@
 import type { Board } from "../board";
 
 export abstract class Shape {
+  board: Board;
   id: number;
   x: number;
   y: number;
@@ -8,7 +9,8 @@ export abstract class Shape {
   isSelected: boolean = false;
   abstract checkHover(pointer: [number, number]): boolean;
   abstract draw(ctx: CanvasRenderingContext2D, board: Board): void;
-  abstract drawOutline(ctx: CanvasRenderingContext2D, board: Board): void;
+  abstract drawHover(ctx: CanvasRenderingContext2D, board: Board): void;
+  abstract drawSelected(ctx: CanvasRenderingContext2D, board: Board): void;
   setIsSelected(value: boolean): void {
     this.isSelected = value;
   };
@@ -17,7 +19,8 @@ export abstract class Shape {
     this.y = y;
   };
 
-  constructor(id: number, x: number, y: number) {
+  constructor(board: Board, id: number, x: number, y: number) {
+    this.board = board;
     this.id = id;
     this.x = x;
     this.y = y;
