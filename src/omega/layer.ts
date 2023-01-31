@@ -1,35 +1,63 @@
 import { Board } from "./board";
-import { Circle } from "./shapes/circle";
-import { Rectangle } from "./shapes/rectangle";
+import type { Shape } from "./shapeFactory/shape";
+import { ShapeFactory, type ShapeOptions } from "./shapeFactory/shapeFactory";
 
 export class Layer extends Board {
-  // #_board: Board;
-  // #_ctx: CanvasRenderingContext2D;
+  private shapeFactory: ShapeFactory;
 
-  elements: any[] = [];
+  elements: Shape[] = [];
 
-  constructor() {
+  constructor(private board: Board) {
     super();
 
-    this.elements.push(new Rectangle(board, 1, 1200, 1200, 200, 200, 'tomato'));
-    this.elements.push(new Circle(board, 2, 1750, 1550, 100, 'orange'));
-    this.elements.push(new Circle(board, 3, 1350, 1350, 100, '#52BE80'));
+    this.shapeFactory = new ShapeFactory(this.board);
+
+    this.addShape({
+      type: 'rectangle',
+      id: 1,
+      x: 1200,
+      y: 1200,
+      width: 200,
+      height: 200,
+      fillColor: 'tomato'
+    });
+    this.addShape({
+      type: 'circle',
+      id: 2,
+      x: 1750,
+      y: 1550,
+      radius: 100,
+      fillColor: 'orange'
+    });
+    this.addShape({
+      type: 'circle',
+      id: 3,
+      x: 1350,
+      y: 1350,
+      radius: 100,
+      fillColor: '#52BE80'
+    });
+  }
+
+  addShape(options: ShapeOptions): void {
+    const shape = this.shapeFactory.create(options);
+    this.elements.push(shape);
   }
 
   draw(): void {
     this.elements.forEach(obj => {
-      obj.draw(this.ctx, this);
+      obj.draw();
     });
   }
 
   drawHover(elementId: number): void {
     const foundElement = this.elements.find(el => el.id === elementId);
-    foundElement?.drawHover(this.#_ctx, this.#_board);
+    foundElement?.drawHover();
   }
 
   drawSelected(element: any): void {
     if (element && element.isSelected) {
-      element.drawSelected(this.#_ctx, this.#_board);
+      element.drawSelected();
     }
   }
 }

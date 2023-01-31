@@ -19,7 +19,7 @@ export class Board {
   stateChange$ = this._stateChange$.asObservable();
 
   constructor() {
-    this.layer = new Layer();
+    this.layer = new Layer(this);
 
     this.pointerClick$().subscribe();
     this.pointerMove$().subscribe();
@@ -117,8 +117,8 @@ export class Board {
           deltaX: 0,
           deltaY: 0,
           element: hoverElement,
-          elementX: hoverElement.x,
-          elementY: hoverElement.y,
+          elementX: hoverElement?.x || 0,
+          elementY: hoverElement?.y || 0,
         }
       }),
       switchMap(start =>
@@ -136,7 +136,7 @@ export class Board {
             })
           }),
           tap(move => {
-            start.element.setXY([
+            start.element?.setXY([
               start.elementX + Math.round(move.deltaX / this.scale),
               start.elementY + Math.round(move.deltaY / this.scale),
             ]);
