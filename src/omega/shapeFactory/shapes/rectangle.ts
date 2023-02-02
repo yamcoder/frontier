@@ -1,25 +1,21 @@
-import { AbstractShape } from "../shape";
+import { AbstractShape } from "../abstractShape";
 import { COLOR_BRAND } from "../../constants/colors";
-import type { Board } from "../../board";
 import type { RectangleOptions } from "../shapeFactory";
+import type { BoardState } from './../../boardState';
 
 export class Rectangle extends AbstractShape {
   width: number;
   height: number;
 
-  get viewX() {
-    return this.x - this.board.viewportCorner[0];
-  }
+  get _width() { return this.width; }
+  get _height() { return this.height; }
 
-  get viewY() {
-    return this.y - this.board.viewportCorner[1];
-  }
-
-  constructor({ board, options: { id, x, y, fillColor, height, width } }: {
-    board: Board;
+  constructor({ state, ctx, options: { id, x, y, fillColor, height, width } }: {
+    state: BoardState;
+    ctx: CanvasRenderingContext2D;
     options: RectangleOptions;
   }) {
-    super(board, id, x, y, fillColor);
+    super(state, ctx, id, x, y, fillColor);
 
     this.width = height;
     this.height = width;
@@ -34,29 +30,29 @@ export class Rectangle extends AbstractShape {
   }
 
   draw() {
-    this.board.ctx.beginPath();
-    this.board.ctx.fillStyle = this.fillColor;
-    this.board.ctx.fillRect(
-      (this.x - this.board.viewportCorner[0]) * this.board.scale,
-      (this.y - this.board.viewportCorner[1]) * this.board.scale,
-      this.width * this.board.scale,
-      this.height * this.board.scale
+    this.ctx2d.beginPath();
+    this.ctx2d.fillStyle = this.fillColor;
+    this.ctx2d.fillRect(
+      this.viewLeftX,
+      this.viewTopY,
+      this.viewWidth,
+      this.viewHeight
     );
-    this.board.ctx.closePath();
+    this.ctx2d.closePath();
   }
 
   drawHover() {
-    this.board.ctx.beginPath();
-    this.board.ctx.strokeStyle = COLOR_BRAND;
-    this.board.ctx.lineWidth = 3;
-    this.board.ctx.rect(
-      (this.x - this.board.viewportCorner[0]) * this.board.scale,
-      (this.y - this.board.viewportCorner[1]) * this.board.scale,
-      this.width * this.board.scale,
-      this.height * this.board.scale
+    this.ctx2d.beginPath();
+    this.ctx2d.strokeStyle = COLOR_BRAND;
+    this.ctx2d.lineWidth = 3;
+    this.ctx2d.rect(
+      this.viewLeftX,
+      this.viewTopY,
+      this.viewWidth,
+      this.viewHeight
     );
-    this.board.ctx.stroke();
-    this.board.ctx.closePath();
+    this.ctx2d.stroke();
+    this.ctx2d.closePath();
   }
 
   drawSelected() {
@@ -64,83 +60,85 @@ export class Rectangle extends AbstractShape {
     const cornerWidth = cornerHalfSize * 2;
     const cornerHeight = cornerHalfSize * 2;
 
-    this.board.ctx.beginPath();
-    this.board.ctx.strokeStyle = COLOR_BRAND;
-    this.board.ctx.lineWidth = 2;
+    this.ctx2d.beginPath();
+    this.ctx2d.strokeStyle = COLOR_BRAND;
+    this.ctx2d.lineWidth = 2;
 
-    // RTL
-    this.board.ctx.rect(
-      (this.x - this.board.viewportCorner[0]) * this.board.scale - cornerHalfSize,
-      (this.y - this.board.viewportCorner[1]) * this.board.scale - cornerHalfSize,
+    // ----------Corners----------
+    // Top Left
+    this.ctx2d.rect(
+      this.viewLeftX - cornerHalfSize,
+      this.viewTopY - cornerHalfSize,
       cornerWidth,
       cornerHeight
     );
 
-    // RTR
-    this.board.ctx.rect(
-      (this.x - this.board.viewportCorner[0] + this.width) * this.board.scale - cornerHalfSize,
-      (this.y - this.board.viewportCorner[1]) * this.board.scale - cornerHalfSize,
+    // Top Right
+    this.ctx2d.rect(
+      this.viewRightX - cornerHalfSize,
+      this.viewTopY - cornerHalfSize,
       cornerWidth,
       cornerHeight
     );
 
-    // RBL
-    this.board.ctx.rect(
-      (this.x - this.board.viewportCorner[0]) * this.board.scale - cornerHalfSize,
-      (this.y - this.board.viewportCorner[1] + this.height) * this.board.scale - cornerHalfSize,
+    // Bottom Left
+    this.ctx2d.rect(
+      this.viewLeftX - cornerHalfSize,
+      this.viewBottomY - cornerHalfSize,
       cornerWidth,
       cornerHeight
     );
 
-    // RBR
-    this.board.ctx.rect(
-      (this.x - this.board.viewportCorner[0] + this.width) * this.board.scale - cornerHalfSize,
-      (this.y - this.board.viewportCorner[1] + this.height) * this.board.scale - cornerHalfSize,
+    // Bottom Right
+    this.ctx2d.rect(
+      this.viewRightX - cornerHalfSize,
+      this.viewBottomY - cornerHalfSize,
       cornerWidth,
       cornerHeight
     );
 
-    // LineT
-    this.board.ctx.moveTo(
-      (this.x - this.board.viewportCorner[0]) * this.board.scale + cornerHalfSize,
-      (this.y - this.board.viewportCorner[1]) * this.board.scale
+    // ----------Lines----------
+    // Top
+    this.ctx2d.moveTo(
+      this.viewLeftX + cornerHalfSize,
+      this.viewTopY
     );
-    this.board.ctx.lineTo(
-      (this.x - this.board.viewportCorner[0] + this.width) * this.board.scale - cornerHalfSize,
-      (this.y - this.board.viewportCorner[1]) * this.board.scale
-    );
-
-    // LineR
-    this.board.ctx.moveTo(
-      (this.x - this.board.viewportCorner[0] + this.width) * this.board.scale,
-      (this.y - this.board.viewportCorner[1]) * this.board.scale + cornerHalfSize
-    );
-    this.board.ctx.lineTo(
-      (this.x - this.board.viewportCorner[0] + this.width) * this.board.scale,
-      (this.y - this.board.viewportCorner[1] + this.height) * this.board.scale - cornerHalfSize
+    this.ctx2d.lineTo(
+      this.viewRightX - cornerHalfSize,
+      this.viewTopY
     );
 
-    // LineB
-    this.board.ctx.moveTo(
-      (this.x - this.board.viewportCorner[0] + this.width) * this.board.scale - cornerHalfSize,
-      (this.y - this.board.viewportCorner[1] + this.height) * this.board.scale
+    // Right
+    this.ctx2d.moveTo(
+      this.viewRightX,
+      this.viewTopY + cornerHalfSize
     );
-    this.board.ctx.lineTo(
-      (this.x - this.board.viewportCorner[0]) * this.board.scale + cornerHalfSize,
-      (this.y - this.board.viewportCorner[1] + this.height) * this.board.scale
-    );
-
-    // LineL
-    this.board.ctx.moveTo(
-      (this.x - this.board.viewportCorner[0]) * this.board.scale,
-      (this.y - this.board.viewportCorner[1] + this.height) * this.board.scale - cornerHalfSize
-    );
-    this.board.ctx.lineTo(
-      (this.x - this.board.viewportCorner[0]) * this.board.scale,
-      (this.y - this.board.viewportCorner[1]) * this.board.scale + cornerHalfSize
+    this.ctx2d.lineTo(
+      this.viewRightX,
+      this.viewBottomY - cornerHalfSize
     );
 
-    this.board.ctx.stroke();
-    this.board.ctx.closePath();
+    // Bottom
+    this.ctx2d.moveTo(
+      this.viewRightX - cornerHalfSize,
+      this.viewBottomY
+    );
+    this.ctx2d.lineTo(
+      this.viewLeftX + cornerHalfSize,
+      this.viewBottomY
+    );
+
+    // Left
+    this.ctx2d.moveTo(
+      this.viewLeftX,
+      this.viewBottomY - cornerHalfSize
+    );
+    this.ctx2d.lineTo(
+      this.viewLeftX,
+      this.viewTopY + cornerHalfSize
+    );
+
+    this.ctx2d.stroke();
+    this.ctx2d.closePath();
   }
 }

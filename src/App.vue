@@ -6,25 +6,25 @@ const canvasContainerRef = ref<HTMLElement>();
 const board = new Board();
 
 const state = ref({
-  viewportCorner: board.viewportCorner,
-  scale: board.scale,
-  offset: board.offset,
-  pointer: board.pointer,
-  elements: board.layer.elements,
-  hoverElementId: board.hoverElementId,
-  selectedElement: board.selectedElement,
+  viewportCorner: board.state.viewportCorner,
+  scale: board.state.scale,
+  offset: board.state.offset,
+  pointer: board.state.pointer,
+  elements: board.layer.elementsViewList,
+  hoverElementId: board.state.hoverElementId,
+  selectedElement: board.state.selectedElementId,
 });
 
 onMounted(() => {
   board.mount(canvasContainerRef.value!);
   board.stateChange$.subscribe(() => {
-    state.value.viewportCorner = board.viewportCorner;
-    state.value.scale = board.scale;
-    state.value.offset = board.offset;
-    state.value.pointer = board.pointer;
-    state.value.elements = board.layer.elements;
-    state.value.hoverElementId = board.hoverElementId;
-    state.value.selectedElement = board.selectedElement;
+    state.value.viewportCorner = board.state.viewportCorner;
+    state.value.scale = board.state.scale;
+    state.value.offset = board.state.offset;
+    state.value.pointer = board.state.pointer;
+    state.value.elements = board.layer.elementsViewList;
+    state.value.hoverElementId = board.state.hoverElementId;
+    state.value.selectedElement = board.state.selectedElementId;
   });
 });
 </script>
@@ -44,7 +44,7 @@ onMounted(() => {
         hoverElementId: {{ state.hoverElementId }} <br />
         selectedElement: {{ JSON.stringify(state.selectedElement) }} <br />
         <ul>
-          <li v-for="element in state.elements.slice().reverse()">
+          <li v-for="element in state.elements">
             {{ JSON.stringify(element) }}
           </li>
         </ul>
@@ -92,6 +92,6 @@ aside {
 }
 
 .aside {
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 </style>

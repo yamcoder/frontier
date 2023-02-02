@@ -1,16 +1,21 @@
-import { AbstractShape } from "../shape";
+import { AbstractShape } from "../abstractShape";
 import { COLOR_BRAND } from "../../constants/colors";
 import type { Board } from "../../board";
 import type { CircleOptions } from "../shapeFactory";
+import type { BoardState } from './../../boardState';
 
 export class Circle extends AbstractShape {
   radius: number;
 
-  constructor({ board, options: { id, x, y, fillColor, radius } }: {
-    board: Board;
+  get _width() { return this.radius * 2; }
+  get _height() { return this.radius * 2; }
+
+  constructor({ state, ctx, options: { id, x, y, fillColor, radius } }: {
+    state: BoardState;
+    ctx: CanvasRenderingContext2D;
     options: CircleOptions;
   }) {
-    super(board, id, x, y, fillColor);
+    super(state, ctx, id, x, y, fillColor);
 
     this.radius = radius;
   }
@@ -26,46 +31,118 @@ export class Circle extends AbstractShape {
   }
 
   draw() {
-    this.board.ctx.beginPath();
-    this.board.ctx.fillStyle = this.fillColor;
-    this.board.ctx.arc(
-      (this.x + this.radius - this.board.viewportCorner[0]) * this.board.scale,
-      (this.y + this.radius - this.board.viewportCorner[1]) * this.board.scale,
-      this.radius * this.board.scale,
+    this.ctx2d.beginPath();
+    this.ctx2d.fillStyle = this.fillColor;
+    this.ctx2d.arc(
+      (this.x + this.radius - this.boardState.viewportCorner[0]) * this.boardState.scale,
+      (this.y + this.radius - this.boardState.viewportCorner[1]) * this.boardState.scale,
+      this.radius * this.boardState.scale,
       0,
       Math.PI * 2
     );
-    this.board.ctx.fill();
-    this.board.ctx.closePath();
+    this.ctx2d.fill();
+    this.ctx2d.closePath();
   }
 
   drawHover() {
-    this.board.ctx.beginPath();
-    this.board.ctx.strokeStyle = COLOR_BRAND;
-    this.board.ctx.lineWidth = 3;
-    this.board.ctx.arc(
-      (this.x + this.radius - this.board.viewportCorner[0]) * this.board.scale,
-      (this.y + this.radius - this.board.viewportCorner[1]) * this.board.scale,
-      this.radius * this.board.scale,
+    this.ctx2d.beginPath();
+    this.ctx2d.strokeStyle = COLOR_BRAND;
+    this.ctx2d.lineWidth = 3;
+    this.ctx2d.arc(
+      (this.x + this.radius - this.boardState.viewportCorner[0]) * this.boardState.scale,
+      (this.y + this.radius - this.boardState.viewportCorner[1]) * this.boardState.scale,
+      this.radius * this.boardState.scale,
       0,
       Math.PI * 2
     );
-    this.board.ctx.stroke();
-    this.board.ctx.closePath();
+    this.ctx2d.stroke();
+    this.ctx2d.closePath();
   }
 
   drawSelected() {
-    this.board.ctx.beginPath();
-    this.board.ctx.strokeStyle = COLOR_BRAND;
-    this.board.ctx.lineWidth = 5;
-    this.board.ctx.arc(
-      (this.x + this.radius - this.board.viewportCorner[0]) * this.board.scale,
-      (this.y + this.radius - this.board.viewportCorner[1]) * this.board.scale,
-      this.radius * this.board.scale,
-      0,
-      Math.PI * 2
+    const cornerHalfSize = 5;
+    const cornerWidth = cornerHalfSize * 2;
+    const cornerHeight = cornerHalfSize * 2;
+
+    this.ctx2d.beginPath();
+    this.ctx2d.strokeStyle = COLOR_BRAND;
+    this.ctx2d.lineWidth = 2;
+
+    // ----------Corners----------
+    // Top Left
+    this.ctx2d.rect(
+      this.viewLeftX - cornerHalfSize,
+      this.viewTopY - cornerHalfSize,
+      cornerWidth,
+      cornerHeight
     );
-    this.board.ctx.stroke();
-    this.board.ctx.closePath();
+
+    // Top Right
+    this.ctx2d.rect(
+      this.viewRightX - cornerHalfSize,
+      this.viewTopY - cornerHalfSize,
+      cornerWidth,
+      cornerHeight
+    );
+
+    // Bottom Left
+    this.ctx2d.rect(
+      this.viewLeftX - cornerHalfSize,
+      this.viewBottomY - cornerHalfSize,
+      cornerWidth,
+      cornerHeight
+    );
+
+    // Bottom Right
+    this.ctx2d.rect(
+      this.viewRightX - cornerHalfSize,
+      this.viewBottomY - cornerHalfSize,
+      cornerWidth,
+      cornerHeight
+    );
+
+    // ----------Lines----------
+    // Top
+    this.ctx2d.moveTo(
+      this.viewLeftX + cornerHalfSize,
+      this.viewTopY
+    );
+    this.ctx2d.lineTo(
+      this.viewRightX - cornerHalfSize,
+      this.viewTopY
+    );
+
+    // Right
+    this.ctx2d.moveTo(
+      this.viewRightX,
+      this.viewTopY + cornerHalfSize
+    );
+    this.ctx2d.lineTo(
+      this.viewRightX,
+      this.viewBottomY - cornerHalfSize
+    );
+
+    // Bottom
+    this.ctx2d.moveTo(
+      this.viewRightX - cornerHalfSize,
+      this.viewBottomY
+    );
+    this.ctx2d.lineTo(
+      this.viewLeftX + cornerHalfSize,
+      this.viewBottomY
+    );
+
+    // Left
+    this.ctx2d.moveTo(
+      this.viewLeftX,
+      this.viewBottomY - cornerHalfSize
+    );
+    this.ctx2d.lineTo(
+      this.viewLeftX,
+      this.viewTopY + cornerHalfSize
+    );
+
+    this.ctx2d.stroke();
+    this.ctx2d.closePath();
   }
 }
