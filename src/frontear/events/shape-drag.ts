@@ -40,10 +40,8 @@ export const shapeDrag$ = (context: BoardContext) => {
           })
         }),
         tap(move => {
-          start.element?.setXY([
-            start.elementX + Math.round(move.deltaX / context.state.scale),
-            start.elementY + Math.round(move.deltaY / context.state.scale),
-          ]);
+          start.element?.setX(start.elementX + Math.round(move.deltaX / context.state.scale));
+          start.element?.setY(start.elementY + Math.round(move.deltaY / context.state.scale));
 
           context.layer.draw();
           context.stateChanges$.next(true);

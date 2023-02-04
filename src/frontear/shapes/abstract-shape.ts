@@ -17,7 +17,8 @@ export interface Shape {
   drawHover(): void;
   drawSelected(): void;
   setIsSelected(value: boolean): void;
-  setXY([x, y]: [number, number]): void;
+  setX(x: number): void;
+  setY(x: number): void;
 }
 
 export abstract class AbstractShape implements Shape {
@@ -44,10 +45,8 @@ export abstract class AbstractShape implements Shape {
   setIsSelected(value: boolean): void {
     this.isSelected = value;
   };
-  setXY([x, y]: [number, number]): void {
-    this.x = x;
-    this.y = y;
-  };
+  setX(x: number): void { this.x = x; };
+  setY(y: number): void { this.y = y; };
 
   abstract get areaWidth(): number;
   abstract get areaHeight(): number;
