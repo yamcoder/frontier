@@ -1,4 +1,3 @@
-import type { Board } from "../board";
 import type { BoardState } from './../boardState';
 
 export interface Shape {
@@ -12,7 +11,11 @@ export interface Shape {
   fillColor: string;
   isHover: boolean;
   isSelected: boolean;
-  checkHover(pointer: [number, number]): boolean;
+  checkHover(): boolean;
+  checkHoverLT(): boolean;
+  checkHoverRT(): boolean;
+  checkHoverLB(): boolean;
+  checkHoverRB(): boolean;
   draw(): void;
   drawHover(): void;
   drawSelected(): void;
@@ -30,8 +33,16 @@ export abstract class AbstractShape implements Shape {
   y: number;
   fillColor: string;
   isHover: boolean = false;
+  isHoverLT: boolean = false;
+  isHoverRT: boolean = false;
+  isHoverLB: boolean = false;
+  isHoverRB: boolean = false;
   isSelected: boolean = false;
-  abstract checkHover(pointer: [number, number]): boolean;
+  abstract checkHover(): boolean;
+  abstract checkHoverLT(): boolean;
+  abstract checkHoverRT(): boolean;
+  abstract checkHoverLB(): boolean;
+  abstract checkHoverRB(): boolean;
   abstract draw(): void;
   abstract drawHover(): void;
   abstract drawSelected(): void;
@@ -46,17 +57,20 @@ export abstract class AbstractShape implements Shape {
   get boardState() { return this.context.boardState };
   get ctx2d() { return this.context.ctx2d };
 
-  abstract get _width(): number;
-  abstract get _height(): number;
+  abstract get areaWidth(): number;
+  abstract get areaHeight(): number;
 
-  get viewLeftX() { return (this.x - this.context.boardState.viewportCorner[0]) * this.context.boardState.scale; }
-  get viewTopY() { return (this.y - this.context.boardState.viewportCorner[1]) * this.context.boardState.scale; }
+  get viewX() { return this.context.boardState.offsetX; }
+  get viewY() { return this.context.boardState.offsetY; }
 
-  get viewWidth() { return this._width * this.boardState.scale; }
-  get viewHeight() { return this._height * this.boardState.scale; }
+  get viewLeftX() { return (this.x - this.context.boardState.viewportX) * this.context.boardState.scale; }
+  get viewTopY() { return (this.y - this.context.boardState.viewportY) * this.context.boardState.scale; }
 
-  get viewRightX() { return (this.x - this.boardState.viewportCorner[0] + this._width) * this.boardState.scale; }
-  get viewBottomY() { return (this.y - this.boardState.viewportCorner[1] + this._height) * this.boardState.scale; }
+  get viewWidth() { return this.areaWidth * this.boardState.scale; }
+  get viewHeight() { return this.areaHeight * this.boardState.scale; }
+
+  get viewRightX() { return (this.x - this.boardState.viewportX + this.areaWidth) * this.boardState.scale; }
+  get viewBottomY() { return (this.y - this.boardState.viewportY + this.areaHeight) * this.boardState.scale; }
 
   constructor(boardState: BoardState, ctx2d: CanvasRenderingContext2D, id: number, x: number, y: number, fillColor: string) {
     this.context = {

@@ -6,10 +6,10 @@ const canvasContainerRef = ref<HTMLElement>();
 const board = new Board();
 
 const state = ref({
-  viewportCorner: board.state.viewportCorner,
+  viewportCorner: board.state.viewportX,
   scale: board.state.scale,
-  offset: board.state.offset,
-  pointer: board.state.pointer,
+  offset: board.state.offsetX,
+  pointer: board.state.pointerX,
   elements: board.layer.elementsViewList,
   hoverElementId: board.state.hoverElementId,
   selectedElement: board.state.selectedElementId,
@@ -18,10 +18,10 @@ const state = ref({
 onMounted(() => {
   board.mount(canvasContainerRef.value!);
   board.stateChange$.subscribe(() => {
-    state.value.viewportCorner = board.state.viewportCorner;
+    state.value.viewportCorner = board.state.viewportX;
     state.value.scale = board.state.scale;
-    state.value.offset = board.state.offset;
-    state.value.pointer = board.state.pointer;
+    state.value.offset = board.state.offsetX;
+    state.value.pointer = board.state.pointerX;
     state.value.elements = board.layer.elementsViewList;
     state.value.hoverElementId = board.state.hoverElementId;
     state.value.selectedElement = board.state.selectedElementId;
@@ -38,7 +38,7 @@ onMounted(() => {
     <aside>
       <div class="aside">
         Viewport Corner: {{ state.viewportCorner.toString() }} <br />
-        <!-- Viewport Offset: {{ state.offset.toString() }} <br /> -->
+        Viewport Offset: {{ state.offset.toString() }} <br />
         Pointer: {{ state.pointer.toString() }} <br />
         Scale: {{ state.scale }} <br />
         hoverElementId: {{ state.hoverElementId }} <br />
@@ -92,6 +92,6 @@ aside {
 }
 
 .aside {
-  font-size: 1.5rem;
+  font-size: 1rem;
 }
 </style>

@@ -1,8 +1,11 @@
 export class BoardState {
   scale = 1;
-  viewportCorner: [number, number] = [1000, 1000];
-  pointer: [number, number] = [0, 0];
-  offset: [number, number] = [0, 0];
+  viewportX: number = 1000;
+  viewportY: number = 1000;
+  pointerX: number = 0;
+  pointerY: number = 0;
+  offsetX: number = 0;
+  offsetY: number = 0;
   hoverElementId: number = 0;
   selectedElementId: number = 0;
 

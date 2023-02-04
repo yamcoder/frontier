@@ -44,14 +44,17 @@ export class Board {
         offsetY: move.clientY - (move.target as HTMLCanvasElement).offsetTop,
       })),
       tap(event => {
-        state.offset = [event.offsetX, event.offsetY];
-        state.pointer = [
-          Math.round(state.viewportCorner[0] + (event.offsetX / state.scale)),
-          Math.round(state.viewportCorner[1] + (event.offsetY / state.scale))
-        ] as [number, number];
+        state.offsetX = event.offsetX;
+        state.offsetY = event.offsetY;
+        state.pointerX = Math.round(state.viewportX + (event.offsetX / state.scale));
+        state.pointerY = Math.round(state.viewportY + (event.offsetY / state.scale));
 
         this.layer.elements.forEach(element => {
-          element.checkHover(state.pointer);
+          element.checkHover();
+          element.checkHoverLT();
+          element.checkHoverRT();
+          element.checkHoverLB();
+          element.checkHoverRB();
         });
 
         for (let i = this.layer.elements.length - 1; i >= 0; i--) {
@@ -162,6 +165,7 @@ export class Board {
       filter(start => start.button === 1),
       tap(start => {
         this.canvas.setPointerCapture(start.pointerId);
+        this.canvas.style.cursor = 'grabbing';
       }),
       map(start => ({
         originalEvent: start,
@@ -169,7 +173,8 @@ export class Board {
         offsetY: start.clientY - (start.target as HTMLCanvasElement).offsetTop,
         deltaX: 0,
         deltaY: 0,
-        viewportCorner: state.viewportCorner
+        viewportX: state.viewportX,
+        viewportY: state.viewportY
       })),
       switchMap(start =>
         pointerMove$.pipe(
@@ -183,18 +188,21 @@ export class Board {
               offsetY: move.clientY - (move.target as HTMLCanvasElement).offsetTop,
               deltaX,
               deltaY,
-              viewportCorner: [
-                start.viewportCorner[0] - Math.round(deltaX / state.scale),
-                start.viewportCorner[1] - Math.round(deltaY / state.scale)
-              ] as [number, number]
+              viewportX: start.viewportX - Math.round(deltaX / state.scale),
+              viewportY: start.viewportY - Math.round(deltaY / state.scale),
             })
           }),
           tap(move => {
-            this.changeCorner(state, move.viewportCorner);
+            state.viewportX = move.viewportX;
+            state.viewportY = move.viewportY;
             this.drawElements();
+            this.drawSelectedOutline();
             this._stateChange$.next(true);
           }),
-          takeUntil(pointerUp$)
+          takeUntil(pointerUp$.pipe(
+            tap(() => {
+              this.canvas.style.cursor = 'default';
+            })))
         )),
     );
   }
@@ -219,11 +227,10 @@ export class Board {
           newScale = newScale < 0.2 ? 0.2 : newScale;
           state.scale = +newScale.toFixed(1);
         }
-        this.changeCorner(state, [
-          state.pointer[0] - Math.round(state.offset[0] / newScale),
-          state.pointer[1] - Math.round(state.offset[1] / newScale),
-        ]);
+        state.viewportX = state.pointerX - Math.round(state.offsetX / newScale);
+        state.viewportY = state.pointerY - Math.round(state.offsetY / newScale);
         this.drawElements();
+        this.drawSelectedOutline();
         this._stateChange$.next(true);
       })
     )
@@ -236,10 +243,6 @@ export class Board {
     this.canvas.height = element.clientHeight;
     this.drawElements();
     element.append(this.canvas);
-  }
-
-  changeCorner(state: BoardState, viewportCorner: [number, number]) {
-    state.viewportCorner = viewportCorner;
   }
 
   onBoardResize(element: HTMLElement): void {
