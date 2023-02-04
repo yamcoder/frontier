@@ -1,5 +1,5 @@
-import { COLOR_BRAND } from "../../constants/colors";
-import type { AbstractShape } from "../abstractShape";
+import { COLOR_BRAND } from "../constants/colors";
+import type { AbstractShape } from "../shapes/abstract-shape";
 
 export const drawSelectedFn = (shapeInstance: AbstractShape) => {
   const cornerHalfSize = 5;

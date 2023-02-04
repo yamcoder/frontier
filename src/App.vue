@@ -1,28 +1,34 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { Board } from "./omega";
+import { Board } from "./frontear";
 
 const canvasContainerRef = ref<HTMLElement>();
 const board = new Board();
 
 const state = ref({
-  viewportCorner: board.state.viewportX,
+  shapes: board.shapes,
   scale: board.state.scale,
-  offset: board.state.offsetX,
-  pointer: board.state.pointerX,
-  elements: board.layer.elementsViewList,
+  viewportX: board.state.viewportX,
+  viewportY: board.state.viewportY,
+  offsetX: board.state.offsetX,
+  offsetY: board.state.offsetY,
+  pointerX: board.state.pointerX,
+  pointerY: board.state.pointerY,
   hoverElementId: board.state.hoverElementId,
   selectedElement: board.state.selectedElementId,
 });
 
 onMounted(() => {
   board.mount(canvasContainerRef.value!);
-  board.stateChange$.subscribe(() => {
-    state.value.viewportCorner = board.state.viewportX;
+  board.stateChanges$.subscribe(() => {
+    state.value.shapes = board.shapes;
     state.value.scale = board.state.scale;
-    state.value.offset = board.state.offsetX;
-    state.value.pointer = board.state.pointerX;
-    state.value.elements = board.layer.elementsViewList;
+    state.value.viewportX = board.state.viewportX;
+    state.value.viewportY = board.state.viewportY;
+    state.value.offsetX = board.state.offsetX;
+    state.value.offsetY = board.state.offsetY;
+    state.value.pointerX = board.state.pointerX;
+    state.value.pointerY = board.state.pointerY;
     state.value.hoverElementId = board.state.hoverElementId;
     state.value.selectedElement = board.state.selectedElementId;
   });
@@ -37,15 +43,15 @@ onMounted(() => {
     <main ref="canvasContainerRef"></main>
     <aside>
       <div class="aside">
-        Viewport Corner: {{ state.viewportCorner.toString() }} <br />
-        Viewport Offset: {{ state.offset.toString() }} <br />
-        Pointer: {{ state.pointer.toString() }} <br />
+        Viewport Corner: [{{ state.viewportX }}, {{ state.viewportY }}] <br />
+        Viewport Offset: [{{ state.offsetX }}, {{ state.offsetY }}] <br />
+        Pointer: [{{ state.pointerX }}, {{ state.pointerY }}]<br />
         Scale: {{ state.scale }} <br />
         hoverElementId: {{ state.hoverElementId }} <br />
         selectedElement: {{ JSON.stringify(state.selectedElement) }} <br />
         <ul>
-          <li v-for="element in state.elements">
-            {{ JSON.stringify(element) }}
+          <li v-for="shape in state.shapes">
+            {{ JSON.stringify(shape) }}
           </li>
         </ul>
       </div>

@@ -1,0 +1,73 @@
+import { Subject } from "rxjs";
+import { pointerClick$ } from "../events/pointer-click";
+import { pointerMove$ } from "../events/pointer-move";
+import { shapeDrag$ } from "../events/shape-drag";
+import { viewportDrag$ } from "../events/viewport-drag";
+import { viewportZoom$ } from "../events/viewport-zoom";
+import { Layer } from "../layers/layer";
+import { BoardState } from "./board-state";
+
+export type BoardContext = {
+  canvas: HTMLCanvasElement;
+  ctx2d: CanvasRenderingContext2D;
+  state: BoardState;
+  stateChanges$: Subject<true>;
+  layer: Layer;
+}
+
+export class BoardCore {
+  readonly #canvas = document.createElement('canvas');
+  readonly #ctx2d = this.#canvas.getContext('2d')!;
+  readonly #state = new BoardState();
+  readonly #stateChanges$ = new Subject<true>();
+  readonly #layer = new Layer(this.#canvas, this.#ctx2d, this.#state);
+
+  readonly #context: BoardContext = {
+    canvas: this.#canvas,
+    ctx2d: this.#ctx2d,
+    state: this.#state,
+    stateChanges$: this.#stateChanges$,
+    layer: this.#layer
+  };
+
+  stateChanges$ = this.#stateChanges$.asObservable();
+
+  get state() {
+    return this.#state;
+  }
+
+  get shapes() {
+    return this.#layer.shapesList;
+  }
+
+  constructor() {
+    pointerClick$(this.#context).subscribe();
+    pointerMove$(this.#context).subscribe();
+    viewportDrag$(this.#context).subscribe();
+    viewportZoom$(this.#context).subscribe();
+    shapeDrag$(this.#context).subscribe();
+  }
+
+  mount(element: HTMLElement): void {
+    this.#canvas.style.display = 'block';
+    this.#canvas.style.backgroundColor = '#F5F5F5';
+    this.#canvas.width = element.clientWidth;
+    this.#canvas.height = element.clientHeight;
+    this.onBoardResize(element);
+    element.append(this.#canvas);
+    this.draw();
+  }
+
+  private onBoardResize(element: HTMLElement): void {
+    const resizer = new ResizeObserver(([entry]) => {
+      this.#canvas.width = entry.contentRect.width;
+      this.#canvas.height = entry.contentRect.height;
+      this.draw();
+    });
+    resizer.observe(element);
+  }
+
+  private draw(): void {
+    this.#layer.draw();
+  }
+}

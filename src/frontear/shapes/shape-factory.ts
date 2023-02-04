@@ -1,8 +1,7 @@
-import type { Shape } from "./abstractShape";
-import { Rectangle } from "./shapes/rectangle";
-import { Circle } from "./shapes/circle";
-import type { Board } from './../board';
-import type { BoardState } from "../boardState";
+import type { Shape } from "./abstract-shape";
+import { Rectangle } from "./shapes-list/rectangle";
+import { Circle } from "./shapes-list/circle";
+import type { LayerContext } from "../layers/layer";
 
 export interface ShapeBaseOptions {
   type: 'rectangle' | 'circle';
@@ -30,15 +29,15 @@ const isRectangleOptions = (options: ShapeOptions): options is RectangleOptions 
 const isCircleOptions = (options: ShapeOptions): options is CircleOptions => options.type === 'circle';
 
 export class ShapeFactory {
-  constructor(private state: BoardState, private ctx: CanvasRenderingContext2D) { }
+  constructor(private context: LayerContext) { }
 
   create(options: ShapeOptions): Shape {
     if (isRectangleOptions(options)) {
-      return new Rectangle({ state: this.state, ctx: this.ctx, options });
+      return new Rectangle({ context: this.context, options });
     }
 
     if (isCircleOptions(options)) {
-      return new Circle({ state: this.state, ctx: this.ctx, options });
+      return new Circle({ context: this.context, options });
     }
 
     throw new Error('SHAPE_TYPE_ERROR');

@@ -8,8 +8,4 @@ export class BoardState {
   offsetY: number = 0;
   hoverElementId: number = 0;
   selectedElementId: number = 0;
-
-  constructor() {
-
-  }
 }
