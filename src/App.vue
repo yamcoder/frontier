@@ -5,32 +5,16 @@ import { Board } from "./frontear";
 const canvasContainerRef = ref<HTMLElement>();
 const board = new Board();
 
-const state = ref({
+const boardContext = ref({
   shapes: board.shapes,
-  scale: board.state.scale,
-  viewportX: board.state.viewportX,
-  viewportY: board.state.viewportY,
-  offsetX: board.state.offsetX,
-  offsetY: board.state.offsetY,
-  pointerX: board.state.pointerX,
-  pointerY: board.state.pointerY,
-  hoverElementId: board.state.hoverElementId,
-  selectedElement: board.state.selectedElementId,
+  state: board.state,
 });
 
 onMounted(() => {
   board.mount(canvasContainerRef.value!);
   board.stateChanges$.subscribe(() => {
-    state.value.shapes = board.shapes;
-    state.value.scale = board.state.scale;
-    state.value.viewportX = board.state.viewportX;
-    state.value.viewportY = board.state.viewportY;
-    state.value.offsetX = board.state.offsetX;
-    state.value.offsetY = board.state.offsetY;
-    state.value.pointerX = board.state.pointerX;
-    state.value.pointerY = board.state.pointerY;
-    state.value.hoverElementId = board.state.hoverElementId;
-    state.value.selectedElement = board.state.selectedElementId;
+    boardContext.value.shapes = board.shapes;
+    boardContext.value.state = board.state;
   });
 });
 </script>
@@ -43,15 +27,15 @@ onMounted(() => {
     <main ref="canvasContainerRef"></main>
     <aside>
       <div class="aside">
-        Viewport Corner: [{{ state.viewportX }}, {{ state.viewportY }}] <br />
-        Viewport Offset: [{{ state.offsetX }}, {{ state.offsetY }}] <br />
-        Pointer: [{{ state.pointerX }}, {{ state.pointerY }}]<br />
-        Scale: {{ state.scale }} <br />
-        hoverElementId: {{ state.hoverElementId }} <br />
-        selectedElement: {{ JSON.stringify(state.selectedElement) }} <br />
+        Viewport Corner: [{{ boardContext.state.viewportX }}, {{ boardContext.state.viewportY }}] <br />
+        Viewport Offset: [{{ boardContext.state.offsetX }}, {{ boardContext.state.offsetY }}] <br />
+        Pointer: [{{ boardContext.state.pointerX }}, {{ boardContext.state.pointerY }}]<br />
+        Scale: {{ boardContext.state.scale }} <br />
+        hoveredShapeId: {{ boardContext.state.hoveredShapeId }} <br />
+        selectedShapeId: {{ JSON.stringify(boardContext.state.selectedShapeId) }} <br />
         <ul>
-          <li v-for="shape in state.shapes">
-            {{ JSON.stringify(shape) }}
+          <li v-for="shape in boardContext.shapes">
+            {{ JSON.stringify(shape, null, 2) }}
           </li>
         </ul>
       </div>

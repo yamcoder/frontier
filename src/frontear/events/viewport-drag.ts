@@ -1,5 +1,5 @@
 import { filter, fromEvent, map, switchMap, takeUntil, tap } from "rxjs";
-import type { BoardContext } from "../core/board-core";
+import type { BoardContext } from "../core/board";
 
 export const viewportDrag$ = (context: BoardContext) => {
   const pointerDown$ = fromEvent<PointerEvent>(context.canvas, 'pointerdown');

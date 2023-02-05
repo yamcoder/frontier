@@ -1,4 +1,5 @@
 import { Subject } from "rxjs";
+import { COLOR_BOARD_BACKGROUND } from "../constants/colors";
 import { pointerClick$ } from "../events/pointer-click";
 import { pointerMove$ } from "../events/pointer-move";
 import { shapeDrag$ } from "../events/shape-drag";
@@ -15,7 +16,7 @@ export type BoardContext = {
   layer: Layer;
 }
 
-export class BoardCore {
+export class Board {
   readonly #canvas = document.createElement('canvas');
   readonly #ctx2d = this.#canvas.getContext('2d')!;
   readonly #state = new BoardState();
@@ -50,15 +51,15 @@ export class BoardCore {
 
   mount(element: HTMLElement): void {
     this.#canvas.style.display = 'block';
-    this.#canvas.style.backgroundColor = '#F5F5F5';
+    this.#canvas.style.backgroundColor = COLOR_BOARD_BACKGROUND;
     this.#canvas.width = element.clientWidth;
     this.#canvas.height = element.clientHeight;
-    this.onBoardResize(element);
+    this.observeResize(element);
     element.append(this.#canvas);
     this.draw();
   }
 
-  private onBoardResize(element: HTMLElement): void {
+  private observeResize(element: HTMLElement): void {
     const resizer = new ResizeObserver(([entry]) => {
       this.#canvas.width = entry.contentRect.width;
       this.#canvas.height = entry.contentRect.height;

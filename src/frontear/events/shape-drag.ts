@@ -1,5 +1,5 @@
 import { fromEvent, filter, tap, map, switchMap, takeUntil } from "rxjs";
-import type { BoardContext } from "../core/board-core";
+import type { BoardContext } from "../core/board";
 
 export const shapeDrag$ = (context: BoardContext) => {
   const pointerDown$ = fromEvent<PointerEvent>(context.canvas, 'pointerdown');
@@ -7,12 +7,12 @@ export const shapeDrag$ = (context: BoardContext) => {
   const pointerUp$ = fromEvent<PointerEvent>(context.canvas, 'pointerup');
 
   return pointerDown$.pipe(
-    filter(start => start.button === 0 && context.state.hoverElementId !== 0),
+    filter(start => start.button === 0 && context.state.hoveredShapeId !== 0),
     tap(start => {
       context.canvas.setPointerCapture(start.pointerId);
     }),
     map(start => {
-      const hoverElement = context.layer.shapes.find(el => el.id === context.state.hoverElementId);
+      const hoveredShape = context.layer.shapes.find(el => el.id === context.state.hoveredShapeId);
 
       return {
         originalEvent: start,
@@ -20,9 +20,9 @@ export const shapeDrag$ = (context: BoardContext) => {
         offsetY: start.clientY - (start.target as HTMLCanvasElement).offsetTop,
         deltaX: 0,
         deltaY: 0,
-        element: hoverElement,
-        elementX: hoverElement?.x || 0,
-        elementY: hoverElement?.y || 0,
+        hoveredShape,
+        hoveredShapeX: hoveredShape?.x || 0,
+        hoveredShapeY: hoveredShape?.y || 0,
       }
     }),
     switchMap(start =>
@@ -40,8 +40,8 @@ export const shapeDrag$ = (context: BoardContext) => {
           })
         }),
         tap(move => {
-          start.element?.setX(start.elementX + Math.round(move.deltaX / context.state.scale));
-          start.element?.setY(start.elementY + Math.round(move.deltaY / context.state.scale));
+          start.hoveredShape?.setX(start.hoveredShapeX + Math.round(move.deltaX / context.state.scale));
+          start.hoveredShape?.setY(start.hoveredShapeY + Math.round(move.deltaY / context.state.scale));
 
           context.layer.draw();
           context.stateChanges$.next(true);

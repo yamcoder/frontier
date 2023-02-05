@@ -6,6 +6,6 @@ export class BoardState {
   pointerY: number = 0;
   offsetX: number = 0;
   offsetY: number = 0;
-  hoverElementId: number = 0;
-  selectedElementId: number = 0;
+  hoveredShapeId: number = 0;
+  selectedShapeId: number = 0;
 }

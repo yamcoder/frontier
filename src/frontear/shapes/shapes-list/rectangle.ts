@@ -2,7 +2,6 @@ import { AbstractShape } from "../abstract-shape";
 import { COLOR_BRAND } from "../../constants/colors";
 import type { RectangleOptions } from "../shape-factory";
 import type { LayerContext } from "@/frontear/layers/layer";
-import { drawSelectedFn } from "../../draw-fns/draw-selected";
 
 export class Rectangle extends AbstractShape {
   width: number;
@@ -21,7 +20,7 @@ export class Rectangle extends AbstractShape {
     this.height = width;
   }
 
-  get isHoverShape(): boolean {
+  get checkIsHoverShape(): boolean {
     return (this.state.pointerX >= this.x && this.state.pointerX <= this.x + this.width) &&
       (this.state.pointerY >= this.y && this.state.pointerY <= this.y + this.height);
   }
@@ -50,9 +49,5 @@ export class Rectangle extends AbstractShape {
     );
     this.ctx2d.stroke();
     this.ctx2d.closePath();
-  }
-
-  drawSelected(): void {
-    return drawSelectedFn(this);
   }
 }

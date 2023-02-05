@@ -16,15 +16,6 @@ export class Layer {
     this.#shapeFactory = new ShapeFactory({ state: this.state, ctx2d: this.ctx2d });
 
     this.addShape({
-      type: 'rectangle',
-      id: 1,
-      x: 1200,
-      y: 1200,
-      width: 200,
-      height: 200,
-      fillColor: '#B5E1CC'
-    });
-    this.addShape({
       type: 'circle',
       id: 2,
       x: 1750,
@@ -40,10 +31,26 @@ export class Layer {
       radius: 100,
       fillColor: '#EAB96F'
     });
+    this.addShape({
+      type: 'rectangle',
+      id: 1,
+      x: 1200,
+      y: 1200,
+      width: 200,
+      height: 200,
+      fillColor: '#B5E1CC'
+    });
   }
 
   get shapesList() {
     return this.shapes.slice().reverse().map(({ context, ...rest }) => rest);
+  }
+
+  get selectedShape() {
+    if (this.state.selectedShapeId !== 0) {
+      const selectedShape = this.shapes.find(el => el.id === this.state.selectedShapeId);
+      return selectedShape;
+    }
   }
 
   addShape(options: ShapeOptions): void {
@@ -65,15 +72,15 @@ export class Layer {
   }
 
   private drawHover(): void {
-    if (this.state.hoverElementId !== 0 && this.state.hoverElementId !== this.state.selectedElementId) {
-      const hoverElement = this.shapes.find(el => el.id === this.state.hoverElementId);
+    if (this.state.hoveredShapeId !== 0 && this.state.hoveredShapeId !== this.state.selectedShapeId) {
+      const hoverElement = this.shapes.find(el => el.id === this.state.hoveredShapeId);
       hoverElement?.drawHover();
     }
   }
 
   private drawSelected(): void {
-    if (this.state.selectedElementId !== 0) {
-      const selectedElement = this.shapes.find(el => el.id === this.state.selectedElementId);
+    if (this.state.selectedShapeId !== 0) {
+      const selectedElement = this.shapes.find(el => el.id === this.state.selectedShapeId);
       selectedElement?.drawSelected();
     }
   }
@@ -87,11 +94,11 @@ export class Layer {
       const element = this.shapes[i];
 
       if (element.isHoveredShape) {
-        this.state.hoverElementId = element.id;
+        this.state.hoveredShapeId = element.id;
         break;
       }
 
-      this.state.hoverElementId = 0;
+      this.state.hoveredShapeId = 0;
     }
   }
 

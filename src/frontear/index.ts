@@ -1,1 +1,1 @@
-export { BoardCore as Board } from './core/board-core';
+export { Board } from './core/board';

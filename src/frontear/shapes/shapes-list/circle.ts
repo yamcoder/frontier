@@ -2,7 +2,6 @@ import { AbstractShape } from "../abstract-shape";
 import { COLOR_BRAND } from "../../constants/colors";
 import type { CircleOptions } from "../shape-factory";
 import type { LayerContext } from "@/frontear/layers/layer";
-import { drawSelectedFn } from "../../draw-fns/draw-selected";
 
 export class Circle extends AbstractShape {
   radius: number;
@@ -19,7 +18,7 @@ export class Circle extends AbstractShape {
     this.radius = radius;
   }
 
-  get isHoverShape(): boolean {
+  get checkIsHoverShape(): boolean {
     return Math.sqrt(
       (this.state.pointerX - this.x - this.radius) ** 2 +
       (this.state.pointerY - this.y - this.radius) ** 2
@@ -53,9 +52,5 @@ export class Circle extends AbstractShape {
     );
     this.ctx2d.stroke();
     this.ctx2d.closePath();
-  }
-
-  drawSelected(): void {
-    return drawSelectedFn(this);
   }
 }

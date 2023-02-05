@@ -1,5 +1,5 @@
 import { fromEvent, map, tap } from "rxjs";
-import type { BoardContext } from "../core/board-core";
+import type { BoardContext } from "../core/board";
 
 export const pointerMove$ = (context: BoardContext) => {
   const pointerMove$ = fromEvent<PointerEvent>(context.canvas, 'pointermove');
@@ -20,6 +20,23 @@ export const pointerMove$ = (context: BoardContext) => {
       context.state.pointerY = Math.round(context.state.viewportY + (event.offsetY / context.state.scale));
 
       context.layer.checkHovers();
+
+      const selectedShape = context.layer.selectedShape;
+
+      if (selectedShape) {
+        if (selectedShape.isHoveredAreaLT || selectedShape.isHoveredAreaRB) {
+          context.canvas.style.cursor = 'nwse-resize';
+        } else if (selectedShape.isHoveredAreaRT || selectedShape.isHoveredAreaLB) {
+          context.canvas.style.cursor = 'nesw-resize';
+        } else if (selectedShape.isHoveredAreaT || selectedShape.isHoveredAreaB) {
+          context.canvas.style.cursor = 'ns-resize';
+        } else if (selectedShape.isHoveredAreaL || selectedShape.isHoveredAreaR) {
+          context.canvas.style.cursor = 'ew-resize';
+        } else {
+          context.canvas.style.cursor = 'default';
+        }
+      }
+
       context.layer.draw();
       context.stateChanges$.next(true);
     })

@@ -1,87 +1,107 @@
-import { COLOR_BRAND } from "../constants/colors";
+import { COLOR_BOARD_BACKGROUND, COLOR_BRAND } from "../constants/colors";
+import { AREA_CORNER_HALF_SIDE, AREA_CORNER_SIDE, AREA_CORNER_THICKNESS } from "../constants/sizes";
 import type { AbstractShape } from "../shapes/abstract-shape";
 
 export const drawSelectedFn = (shapeInstance: AbstractShape) => {
-  const cornerHalfSize = 5;
-  const cornerWidth = cornerHalfSize * 2;
-  const cornerHeight = cornerHalfSize * 2;
-
   shapeInstance.ctx2d.beginPath();
+  shapeInstance.ctx2d.fillStyle = COLOR_BOARD_BACKGROUND;
   shapeInstance.ctx2d.strokeStyle = COLOR_BRAND;
-  shapeInstance.ctx2d.lineWidth = 2;
+  shapeInstance.ctx2d.lineWidth = AREA_CORNER_THICKNESS;
 
-  // ----------Corners----------
-  // Left Top
-  shapeInstance.ctx2d.rect(
-    shapeInstance.viewLeftX - cornerHalfSize,
-    shapeInstance.viewTopY - cornerHalfSize,
-    cornerWidth,
-    cornerHeight
+  // Left Top Corner
+  shapeInstance.ctx2d.fillRect(
+    shapeInstance.viewLeftX - AREA_CORNER_HALF_SIDE,
+    shapeInstance.viewTopY - AREA_CORNER_HALF_SIDE,
+    AREA_CORNER_SIDE,
+    AREA_CORNER_SIDE
+  );
+  shapeInstance.ctx2d.strokeRect(
+    shapeInstance.viewLeftX - AREA_CORNER_HALF_SIDE,
+    shapeInstance.viewTopY - AREA_CORNER_HALF_SIDE,
+    AREA_CORNER_SIDE,
+    AREA_CORNER_SIDE
   );
 
-  // Right Top
-  shapeInstance.ctx2d.rect(
-    shapeInstance.viewRightX - cornerHalfSize,
-    shapeInstance.viewTopY - cornerHalfSize,
-    cornerWidth,
-    cornerHeight
+  // Right Top Corner
+  shapeInstance.ctx2d.fillRect(
+    shapeInstance.viewRightX - AREA_CORNER_HALF_SIDE,
+    shapeInstance.viewTopY - AREA_CORNER_HALF_SIDE,
+    AREA_CORNER_SIDE,
+    AREA_CORNER_SIDE
+  );
+  shapeInstance.ctx2d.strokeRect(
+    shapeInstance.viewRightX - AREA_CORNER_HALF_SIDE,
+    shapeInstance.viewTopY - AREA_CORNER_HALF_SIDE,
+    AREA_CORNER_SIDE,
+    AREA_CORNER_SIDE
   );
 
-  // Left Bottom
-  shapeInstance.ctx2d.rect(
-    shapeInstance.viewLeftX - cornerHalfSize,
-    shapeInstance.viewBottomY - cornerHalfSize,
-    cornerWidth,
-    cornerHeight
+  // Left Bottom Corner
+  shapeInstance.ctx2d.fillRect(
+    shapeInstance.viewLeftX - AREA_CORNER_HALF_SIDE,
+    shapeInstance.viewBottomY - AREA_CORNER_HALF_SIDE,
+    AREA_CORNER_SIDE,
+    AREA_CORNER_SIDE
+  );
+  shapeInstance.ctx2d.strokeRect(
+    shapeInstance.viewLeftX - AREA_CORNER_HALF_SIDE,
+    shapeInstance.viewBottomY - AREA_CORNER_HALF_SIDE,
+    AREA_CORNER_SIDE,
+    AREA_CORNER_SIDE
   );
 
-  // Right Bottom
-  shapeInstance.ctx2d.rect(
-    shapeInstance.viewRightX - cornerHalfSize,
-    shapeInstance.viewBottomY - cornerHalfSize,
-    cornerWidth,
-    cornerHeight
+  // Right Bottom Corner
+  shapeInstance.ctx2d.fillRect(
+    shapeInstance.viewRightX - AREA_CORNER_HALF_SIDE,
+    shapeInstance.viewBottomY - AREA_CORNER_HALF_SIDE,
+    AREA_CORNER_SIDE,
+    AREA_CORNER_SIDE
+  );
+  shapeInstance.ctx2d.strokeRect(
+    shapeInstance.viewRightX - AREA_CORNER_HALF_SIDE,
+    shapeInstance.viewBottomY - AREA_CORNER_HALF_SIDE,
+    AREA_CORNER_SIDE,
+    AREA_CORNER_SIDE
   );
 
-  // ----------Lines----------
-  // Top
+  // Top Side Line
   shapeInstance.ctx2d.moveTo(
-    shapeInstance.viewLeftX + cornerHalfSize,
+    shapeInstance.viewLeftX + AREA_CORNER_HALF_SIDE,
     shapeInstance.viewTopY
   );
   shapeInstance.ctx2d.lineTo(
-    shapeInstance.viewRightX - cornerHalfSize,
+    shapeInstance.viewRightX - AREA_CORNER_HALF_SIDE,
     shapeInstance.viewTopY
   );
 
-  // Right
+  // Right Side Line
   shapeInstance.ctx2d.moveTo(
     shapeInstance.viewRightX,
-    shapeInstance.viewTopY + cornerHalfSize
+    shapeInstance.viewTopY + AREA_CORNER_HALF_SIDE
   );
   shapeInstance.ctx2d.lineTo(
     shapeInstance.viewRightX,
-    shapeInstance.viewBottomY - cornerHalfSize
+    shapeInstance.viewBottomY - AREA_CORNER_HALF_SIDE
   );
 
-  // Bottom
+  // Bottom Side Line
   shapeInstance.ctx2d.moveTo(
-    shapeInstance.viewRightX - cornerHalfSize,
+    shapeInstance.viewRightX - AREA_CORNER_HALF_SIDE,
     shapeInstance.viewBottomY
   );
   shapeInstance.ctx2d.lineTo(
-    shapeInstance.viewLeftX + cornerHalfSize,
+    shapeInstance.viewLeftX + AREA_CORNER_HALF_SIDE,
     shapeInstance.viewBottomY
   );
 
-  // Left
+  // Left Side Line
   shapeInstance.ctx2d.moveTo(
     shapeInstance.viewLeftX,
-    shapeInstance.viewBottomY - cornerHalfSize
+    shapeInstance.viewBottomY - AREA_CORNER_HALF_SIDE
   );
   shapeInstance.ctx2d.lineTo(
     shapeInstance.viewLeftX,
-    shapeInstance.viewTopY + cornerHalfSize
+    shapeInstance.viewTopY + AREA_CORNER_HALF_SIDE
   );
 
   shapeInstance.ctx2d.stroke();

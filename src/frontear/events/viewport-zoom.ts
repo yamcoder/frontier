@@ -1,5 +1,5 @@
 import { fromEvent, filter, tap, map } from "rxjs";
-import type { BoardContext } from "../core/board-core";
+import type { BoardContext } from "../core/board";
 
 export const viewportZoom$ = (context: BoardContext) => {
   const wheel$ = fromEvent<WheelEvent>(context.canvas, 'wheel');

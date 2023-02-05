@@ -1,3 +1,5 @@
+import { AREA_CORNER_HALF_SIDE } from '../constants/sizes';
+import { drawSelectedFn } from '../draw-fns/draw-selected';
 import type { LayerContext } from '../layers/layer';
 
 export interface Shape {
@@ -7,10 +9,15 @@ export interface Shape {
   y: number;
   fillColor: string;
   isHoveredShape: boolean;
-  isHoveredLT: boolean;
-  isHoveredRT: boolean;
-  isHoveredLB: boolean;
-  isHoveredRB: boolean;
+  isHoveredArea: boolean;
+  isHoveredAreaLT: boolean;
+  isHoveredAreaRT: boolean;
+  isHoveredAreaLB: boolean;
+  isHoveredAreaRB: boolean;
+  isHoveredAreaT: boolean;
+  isHoveredAreaR: boolean;
+  isHoveredAreaB: boolean;
+  isHoveredAreaL: boolean;
   isSelected: boolean;
   checkHovers(): void;
   draw(): void;
@@ -32,16 +39,25 @@ export abstract class AbstractShape implements Shape {
   fillColor: string;
 
   isHoveredShape: boolean = false;
-  isHoveredLT: boolean = false;
-  isHoveredRT: boolean = false;
-  isHoveredLB: boolean = false;
-  isHoveredRB: boolean = false;
+  isHoveredArea: boolean = false;
+  isHoveredAreaLT: boolean = false;
+  isHoveredAreaRT: boolean = false;
+  isHoveredAreaLB: boolean = false;
+  isHoveredAreaRB: boolean = false;
+  isHoveredAreaT: boolean = false;
+  isHoveredAreaR: boolean = false;
+  isHoveredAreaB: boolean = false;
+  isHoveredAreaL: boolean = false;
 
   isSelected: boolean = false;
 
   abstract draw(): void;
   abstract drawHover(): void;
-  abstract drawSelected(): void;
+
+  drawSelected(): void {
+    return drawSelectedFn(this);
+  }
+
   setIsSelected(value: boolean): void {
     this.isSelected = value;
   };
@@ -63,34 +79,67 @@ export abstract class AbstractShape implements Shape {
   get viewRightX() { return (this.x - this.state.viewportX + this.areaWidth) * this.state.scale; }
   get viewBottomY() { return (this.y - this.state.viewportY + this.areaHeight) * this.state.scale; }
 
-  abstract get isHoverShape(): boolean;
+  abstract get checkIsHoverShape(): boolean;
 
-  get isHoverLT(): boolean {
-    return (this.offsetX >= this.viewLeftX - 5 && this.offsetX <= this.viewLeftX + 5) &&
-      (this.offsetY >= this.viewTopY - 5 && this.offsetY <= this.viewTopY + 5);
+  get checkHoverArea(): boolean {
+    return (this.offsetX > this.viewLeftX + AREA_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - AREA_CORNER_HALF_SIDE) &&
+      (this.offsetY > this.viewTopY + AREA_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - AREA_CORNER_HALF_SIDE);
+  };
+
+  get checkHoverLT(): boolean {
+    return (this.offsetX >= this.viewLeftX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + AREA_CORNER_HALF_SIDE) &&
+      (this.offsetY >= this.viewTopY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + AREA_CORNER_HALF_SIDE);
   }
 
-  get isHoverRT(): boolean {
-    return (this.offsetX >= this.viewRightX - 5 && this.offsetX <= this.viewRightX + 5) &&
-      (this.offsetY >= this.viewTopY - 5 && this.offsetY <= this.viewTopY + 5);
+  get checkHoverRT(): boolean {
+    return (this.offsetX >= this.viewRightX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + AREA_CORNER_HALF_SIDE) &&
+      (this.offsetY >= this.viewTopY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + AREA_CORNER_HALF_SIDE);
   }
 
-  get isHoverLB(): boolean {
-    return (this.offsetX >= this.viewLeftX - 5 && this.offsetX <= this.viewLeftX + 5) &&
-      (this.offsetY >= this.viewBottomY - 5 && this.offsetY <= this.viewBottomY + 5);
+  get checkHoverLB(): boolean {
+    return (this.offsetX >= this.viewLeftX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + AREA_CORNER_HALF_SIDE) &&
+      (this.offsetY >= this.viewBottomY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + AREA_CORNER_HALF_SIDE);
   }
 
-  get isHoverRB(): boolean {
-    return (this.offsetX >= this.viewRightX - 5 && this.offsetX <= this.viewRightX + 5) &&
-      (this.offsetY >= this.viewBottomY - 5 && this.offsetY <= this.viewBottomY + 5);
+  get checkHoverRB(): boolean {
+    return (this.offsetX >= this.viewRightX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + AREA_CORNER_HALF_SIDE) &&
+      (this.offsetY >= this.viewBottomY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + AREA_CORNER_HALF_SIDE);
+  }
+
+  get checkHoverT(): boolean {
+    return (this.offsetX > this.viewLeftX + AREA_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - AREA_CORNER_HALF_SIDE) &&
+      (this.offsetY >= this.viewTopY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + AREA_CORNER_HALF_SIDE);
+  }
+
+  get checkHoverR(): boolean {
+    return (this.offsetX >= this.viewRightX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + AREA_CORNER_HALF_SIDE) &&
+      (this.offsetY > this.viewTopY + AREA_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - AREA_CORNER_HALF_SIDE);
+  }
+
+  get checkHoverB(): boolean {
+    return (this.offsetX > this.viewLeftX + AREA_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - AREA_CORNER_HALF_SIDE) &&
+      (this.offsetY >= this.viewBottomY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + AREA_CORNER_HALF_SIDE);
+  }
+
+  get checkHoverL(): boolean {
+    return (this.offsetX >= this.viewLeftX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + AREA_CORNER_HALF_SIDE) &&
+      (this.offsetY > this.viewTopY + AREA_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - AREA_CORNER_HALF_SIDE);
   }
 
   checkHovers(): void {
-    this.isHoveredShape = this.isHoverShape;
-    this.isHoveredLT = this.isHoverLT;
-    this.isHoveredRT = this.isHoverRT;
-    this.isHoveredLB = this.isHoverLB;
-    this.isHoveredRB = this.isHoverRB;
+    this.isHoveredShape = this.checkIsHoverShape;
+
+    if (this.isSelected) {
+      this.isHoveredArea = this.checkHoverArea;
+      this.isHoveredAreaLT = this.checkHoverLT;
+      this.isHoveredAreaRT = this.checkHoverRT;
+      this.isHoveredAreaLB = this.checkHoverLB;
+      this.isHoveredAreaRB = this.checkHoverRB;
+      this.isHoveredAreaT = this.checkHoverT;
+      this.isHoveredAreaR = this.checkHoverR;
+      this.isHoveredAreaB = this.checkHoverB;
+      this.isHoveredAreaL = this.checkHoverL;
+    }
   }
 
   constructor(context: LayerContext, id: number, x: number, y: number, fillColor: string) {
