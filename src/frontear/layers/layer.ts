@@ -46,7 +46,7 @@ export class Layer {
     return this.shapes.slice().reverse().map(({ context, ...rest }) => rest);
   }
 
-  get selectedShape() {
+  getSelectedShape() {
     if (this.state.selectedShapeId !== 0) {
       const selectedShape = this.shapes.find(el => el.id === this.state.selectedShapeId);
       return selectedShape;

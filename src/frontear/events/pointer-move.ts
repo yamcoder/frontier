@@ -21,7 +21,7 @@ export const pointerMove$ = (context: BoardContext) => {
 
       context.layer.checkHovers();
 
-      const selectedShape = context.layer.selectedShape;
+      const selectedShape = context.layer.getSelectedShape();
 
       if (selectedShape) {
         if (selectedShape.isHoveredAreaLT || selectedShape.isHoveredAreaRB) {
