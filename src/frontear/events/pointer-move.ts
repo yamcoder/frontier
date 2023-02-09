@@ -21,20 +21,16 @@ export const pointerMove$ = (context: BoardContext) => {
 
       context.layer.checkHovers();
 
-      const selectedShape = context.layer.getSelectedShape();
-
-      if (selectedShape) {
-        if (selectedShape.isHoveredAreaLT || selectedShape.isHoveredAreaRB) {
-          context.canvas.style.cursor = 'nwse-resize';
-        } else if (selectedShape.isHoveredAreaRT || selectedShape.isHoveredAreaLB) {
-          context.canvas.style.cursor = 'nesw-resize';
-        } else if (selectedShape.isHoveredAreaT || selectedShape.isHoveredAreaB) {
-          context.canvas.style.cursor = 'ns-resize';
-        } else if (selectedShape.isHoveredAreaL || selectedShape.isHoveredAreaR) {
-          context.canvas.style.cursor = 'ew-resize';
-        } else {
-          context.canvas.style.cursor = 'default';
-        }
+      if (context.state.isHoverShapeControlLT || context.state.isHoverShapeControlRB) {
+        context.canvas.style.cursor = 'nwse-resize';
+      } else if (context.state.isHoverShapeControlRT || context.state.isHoverShapeControlLB) {
+        context.canvas.style.cursor = 'nesw-resize';
+      } else if (context.state.isHoverShapeControlT || context.state.isHoverShapeControlB) {
+        context.canvas.style.cursor = 'ns-resize';
+      } else if (context.state.isHoverShapeControlL || context.state.isHoverShapeControlR) {
+        context.canvas.style.cursor = 'ew-resize';
+      } else {
+        context.canvas.style.cursor = 'default';
       }
 
       context.layer.draw();

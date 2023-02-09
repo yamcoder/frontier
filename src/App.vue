@@ -33,6 +33,17 @@ onMounted(() => {
         Scale: {{ boardContext.state.scale }} <br />
         hoveredShapeId: {{ boardContext.state.hoveredShapeId }} <br />
         selectedShapeId: {{ JSON.stringify(boardContext.state.selectedShapeId) }} <br />
+        isDragging: {{ boardContext.state.isDragging }} <br />
+        isHoverShapeControlArea: {{ boardContext.state.isHoverShapeControlArea }} <br />
+        isHoverShapeControlBoundary: {{ boardContext.state.isHoverShapeControlBoundary }} <br />
+        isHoverShapeControlLT: {{ boardContext.state.isHoverShapeControlLT }} <br />
+        isHoverShapeControlRT: {{ boardContext.state.isHoverShapeControlRT }} <br />
+        isHoverShapeControlLB: {{ boardContext.state.isHoverShapeControlLB }} <br />
+        isHoverShapeControlRB: {{ boardContext.state.isHoverShapeControlRB }} <br />
+        isHoverShapeControlT: {{ boardContext.state.isHoverShapeControlT }} <br />
+        isHoverShapeControlR: {{ boardContext.state.isHoverShapeControlR }} <br />
+        isHoverShapeControlB: {{ boardContext.state.isHoverShapeControlB }} <br />
+        isHoverShapeControlL: {{ boardContext.state.isHoverShapeControlL }} <br />
         <ul>
           <li v-for="shape in boardContext.shapes">
             {{ JSON.stringify(shape, null, 2) }}

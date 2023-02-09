@@ -8,18 +8,10 @@ export interface Shape {
   x: number;
   y: number;
   fillColor: string;
-  isHoveredShape: boolean;
-  isHoveredArea: boolean;
-  isHoveredAreaLT: boolean;
-  isHoveredAreaRT: boolean;
-  isHoveredAreaLB: boolean;
-  isHoveredAreaRB: boolean;
-  isHoveredAreaT: boolean;
-  isHoveredAreaR: boolean;
-  isHoveredAreaB: boolean;
-  isHoveredAreaL: boolean;
   isSelected: boolean;
-  checkHovers(): void;
+  isHovered: boolean;
+  checkHover(): void;
+  checkShapeControlHovers(): void;
   draw(): void;
   drawHover(): void;
   drawSelected(): void;
@@ -38,18 +30,8 @@ export abstract class AbstractShape implements Shape {
   y: number;
   fillColor: string;
 
-  isHoveredShape: boolean = false;
-  isHoveredArea: boolean = false;
-  isHoveredAreaLT: boolean = false;
-  isHoveredAreaRT: boolean = false;
-  isHoveredAreaLB: boolean = false;
-  isHoveredAreaRB: boolean = false;
-  isHoveredAreaT: boolean = false;
-  isHoveredAreaR: boolean = false;
-  isHoveredAreaB: boolean = false;
-  isHoveredAreaL: boolean = false;
-
   isSelected: boolean = false;
+  isHovered: boolean = false;
 
   abstract draw(): void;
   abstract drawHover(): void;
@@ -81,65 +63,65 @@ export abstract class AbstractShape implements Shape {
 
   abstract get checkIsHoverShape(): boolean;
 
-  get checkHoverArea(): boolean {
+  get checkHoverShapeControlArea(): boolean {
     return (this.offsetX > this.viewLeftX + AREA_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - AREA_CORNER_HALF_SIDE) &&
       (this.offsetY > this.viewTopY + AREA_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - AREA_CORNER_HALF_SIDE);
   };
 
-  get checkHoverLT(): boolean {
+  get checkHoverShapeControlLT(): boolean {
     return (this.offsetX >= this.viewLeftX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + AREA_CORNER_HALF_SIDE) &&
       (this.offsetY >= this.viewTopY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + AREA_CORNER_HALF_SIDE);
   }
 
-  get checkHoverRT(): boolean {
+  get checkHoverShapeControlRT(): boolean {
     return (this.offsetX >= this.viewRightX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + AREA_CORNER_HALF_SIDE) &&
       (this.offsetY >= this.viewTopY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + AREA_CORNER_HALF_SIDE);
   }
 
-  get checkHoverLB(): boolean {
+  get checkHoverShapeControlLB(): boolean {
     return (this.offsetX >= this.viewLeftX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + AREA_CORNER_HALF_SIDE) &&
       (this.offsetY >= this.viewBottomY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + AREA_CORNER_HALF_SIDE);
   }
 
-  get checkHoverRB(): boolean {
+  get checkHoverShapeControlRB(): boolean {
     return (this.offsetX >= this.viewRightX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + AREA_CORNER_HALF_SIDE) &&
       (this.offsetY >= this.viewBottomY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + AREA_CORNER_HALF_SIDE);
   }
 
-  get checkHoverT(): boolean {
+  get checkHoverShapeControlT(): boolean {
     return (this.offsetX > this.viewLeftX + AREA_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - AREA_CORNER_HALF_SIDE) &&
       (this.offsetY >= this.viewTopY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + AREA_CORNER_HALF_SIDE);
   }
 
-  get checkHoverR(): boolean {
+  get checkHoverShapeControlR(): boolean {
     return (this.offsetX >= this.viewRightX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + AREA_CORNER_HALF_SIDE) &&
       (this.offsetY > this.viewTopY + AREA_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - AREA_CORNER_HALF_SIDE);
   }
 
-  get checkHoverB(): boolean {
+  get checkHoverShapeControlB(): boolean {
     return (this.offsetX > this.viewLeftX + AREA_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - AREA_CORNER_HALF_SIDE) &&
       (this.offsetY >= this.viewBottomY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + AREA_CORNER_HALF_SIDE);
   }
 
-  get checkHoverL(): boolean {
+  get checkHoverShapeControlL(): boolean {
     return (this.offsetX >= this.viewLeftX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + AREA_CORNER_HALF_SIDE) &&
       (this.offsetY > this.viewTopY + AREA_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - AREA_CORNER_HALF_SIDE);
   }
 
-  checkHovers(): void {
-    this.isHoveredShape = this.checkIsHoverShape;
+  checkHover(): void {
+    this.isHovered = this.checkIsHoverShape;
+  }
 
-    if (this.isSelected) {
-      this.isHoveredArea = this.checkHoverArea;
-      this.isHoveredAreaLT = this.checkHoverLT;
-      this.isHoveredAreaRT = this.checkHoverRT;
-      this.isHoveredAreaLB = this.checkHoverLB;
-      this.isHoveredAreaRB = this.checkHoverRB;
-      this.isHoveredAreaT = this.checkHoverT;
-      this.isHoveredAreaR = this.checkHoverR;
-      this.isHoveredAreaB = this.checkHoverB;
-      this.isHoveredAreaL = this.checkHoverL;
-    }
+  checkShapeControlHovers(): void {
+    this.state.isHoverShapeControlArea = this.checkHoverShapeControlArea;
+    this.state.isHoverShapeControlLT = this.checkHoverShapeControlLT;
+    this.state.isHoverShapeControlRT = this.checkHoverShapeControlRT;
+    this.state.isHoverShapeControlLB = this.checkHoverShapeControlLB;
+    this.state.isHoverShapeControlRB = this.checkHoverShapeControlRB;
+    this.state.isHoverShapeControlT = this.checkHoverShapeControlT;
+    this.state.isHoverShapeControlR = this.checkHoverShapeControlR;
+    this.state.isHoverShapeControlB = this.checkHoverShapeControlB;
+    this.state.isHoverShapeControlL = this.checkHoverShapeControlL;
   }
 
   constructor(context: LayerContext, id: number, x: number, y: number, fillColor: string) {

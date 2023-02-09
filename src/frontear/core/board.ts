@@ -1,6 +1,6 @@
 import { Subject } from "rxjs";
 import { COLOR_BOARD_BACKGROUND } from "../constants/colors";
-import { pointerClick$ } from "../events/pointer-click";
+import { shapeSelect$ } from "../events/shape-select";
 import { pointerMove$ } from "../events/pointer-move";
 import { shapeDrag$ } from "../events/shape-drag";
 import { viewportDrag$ } from "../events/viewport-drag";
@@ -42,10 +42,10 @@ export class Board {
   }
 
   constructor() {
-    pointerClick$(this.#context).subscribe();
     pointerMove$(this.#context).subscribe();
     viewportDrag$(this.#context).subscribe();
     viewportZoom$(this.#context).subscribe();
+    shapeSelect$(this.#context).subscribe();
     shapeDrag$(this.#context).subscribe();
   }
 
