@@ -9,6 +9,7 @@ export class BoardState {
   selectedShapeId: number = 0;
   hoveredShapeId: number = 0;
   isDragging: boolean = false;
+  isSizing: boolean = false;
   isHoverShapeControlArea: boolean = false;
   isHoverShapeControlLT: boolean = false;
   isHoverShapeControlRT: boolean = false;

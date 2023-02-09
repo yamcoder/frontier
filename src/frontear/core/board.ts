@@ -1,12 +1,13 @@
 import { Subject } from "rxjs";
 import { COLOR_BOARD_BACKGROUND } from "../constants/colors";
-import { shapeSelect$ } from "../events/shape-select";
-import { pointerMove$ } from "../events/pointer-move";
-import { shapeDrag$ } from "../events/shape-drag";
-import { viewportDrag$ } from "../events/viewport-drag";
-import { viewportZoom$ } from "../events/viewport-zoom";
+import { shapeSelect$ } from "../events/shape-select.event";
+import { pointerMove$ } from "../events/pointer-move.event";
+import { shapeDrag$ } from "../events/shape-drag.event";
+import { viewportDrag$ } from "../events/viewport-drag.event";
+import { viewportZoom$ } from "../events/viewport-zoom.event";
 import { Layer } from "../layers/layer";
 import { BoardState } from "./board-state";
+import { shapeSize$ } from "../events/shape-size.event";
 
 export type BoardContext = {
   canvas: HTMLCanvasElement;
@@ -47,6 +48,7 @@ export class Board {
     viewportZoom$(this.#context).subscribe();
     shapeSelect$(this.#context).subscribe();
     shapeDrag$(this.#context).subscribe();
+    shapeSize$(this.#context).subscribe();
   }
 
   mount(element: HTMLElement): void {

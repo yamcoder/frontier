@@ -88,7 +88,6 @@ export class Layer {
   checkHovers(): void {
     this.shapes.forEach(shape => {
       shape.checkHover();
-      shape.checkShapeControlHovers();
     });
 
     const selectedShape = this.shapes.find(shape => shape.isSelected);
@@ -97,14 +96,6 @@ export class Layer {
       selectedShape.checkShapeControlHovers();
     } else {
       this.state.isHoverShapeControlArea = false;
-      // this.state.isHoverShapeControlLT = false;
-      // this.state.isHoverShapeControlRT = false;
-      // this.state.isHoverShapeControlLB = false;
-      // this.state.isHoverShapeControlRB = false;
-      // this.state.isHoverShapeControlT = false;
-      // this.state.isHoverShapeControlR = false;
-      // this.state.isHoverShapeControlB = false;
-      // this.state.isHoverShapeControlL = false;
     }
 
     for (let i = this.shapes.length - 1; i >= 0; i--) {

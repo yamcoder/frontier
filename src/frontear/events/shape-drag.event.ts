@@ -9,7 +9,8 @@ export const shapeDrag$ = (context: BoardContext) => {
 
   return pointerDown$.pipe(
     filter(start => start.button === 0),
-    filter(start => context.state.isHoverShapeControlArea || context.state.hoveredShapeId !== 0),
+    filter(() => !context.state.isHoverShapeControlBoundary),
+    filter(() => context.state.isHoverShapeControlArea || context.state.hoveredShapeId !== 0),
     tap(start => {
       context.canvas.setPointerCapture(start.pointerId);
     }),
@@ -37,23 +38,16 @@ export const shapeDrag$ = (context: BoardContext) => {
     }),
     switchMap(start =>
       pointerMove$.pipe(
-        map(move => {
-          const deltaX = move.clientX - start.originalEvent.clientX;
-          const deltaY = move.clientY - start.originalEvent.clientY;
-
-          if (context.state.isHoverShapeControlArea) {
-            context.state.isDragging = true;
-          }
-
-          return ({
-            originalEvent: move,
-            offsetX: move.clientX - (move.target as HTMLCanvasElement).offsetLeft,
-            offsetY: move.clientY - (move.target as HTMLCanvasElement).offsetTop,
-            deltaX,
-            deltaY,
-          })
-        }),
+        map(move => ({
+          originalEvent: move,
+          offsetX: move.clientX - (move.target as HTMLCanvasElement).offsetLeft,
+          offsetY: move.clientY - (move.target as HTMLCanvasElement).offsetTop,
+          deltaX: move.clientX - start.originalEvent.clientX,
+          deltaY: move.clientY - start.originalEvent.clientY,
+        })),
         tap(move => {
+          context.state.isDragging = true;
+
           start.draggableShape.shape.setX(start.draggableShape.startX + Math.round(move.deltaX / context.state.scale));
           start.draggableShape.shape.setY(start.draggableShape.startY + Math.round(move.deltaY / context.state.scale));
 

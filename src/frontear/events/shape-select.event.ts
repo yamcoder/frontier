@@ -35,7 +35,7 @@ export const shapeSelect$ = (context: BoardContext) => {
     switchMap(event =>
       pointerUp$.pipe(
         tap(event => {
-          if (!context.state.isDragging) {
+          if (!(context.state.isDragging || context.state.isSizing)) {
             selectHandler(context);
           }
         })

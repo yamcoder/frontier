@@ -34,6 +34,7 @@ onMounted(() => {
         hoveredShapeId: {{ boardContext.state.hoveredShapeId }} <br />
         selectedShapeId: {{ JSON.stringify(boardContext.state.selectedShapeId) }} <br />
         isDragging: {{ boardContext.state.isDragging }} <br />
+        isSizing: {{ boardContext.state.isSizing }} <br />
         isHoverShapeControlArea: {{ boardContext.state.isHoverShapeControlArea }} <br />
         isHoverShapeControlBoundary: {{ boardContext.state.isHoverShapeControlBoundary }} <br />
         isHoverShapeControlLT: {{ boardContext.state.isHoverShapeControlLT }} <br />
