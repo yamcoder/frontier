@@ -27,8 +27,8 @@ onMounted(() => {
     <main ref="canvasContainerRef"></main>
     <aside>
       <div class="aside">
-        Viewport Corner: [{{ boardContext.state.viewportX }}, {{ boardContext.state.viewportY }}] <br />
-        Viewport Offset: [{{ boardContext.state.offsetX }}, {{ boardContext.state.offsetY }}] <br />
+        Viewport: [{{ boardContext.state.viewportX }}, {{ boardContext.state.viewportY }}] <br />
+        Offset: [{{ boardContext.state.offsetX }}, {{ boardContext.state.offsetY }}] <br />
         Pointer: [{{ boardContext.state.pointerX }}, {{ boardContext.state.pointerY }}]<br />
         Scale: {{ boardContext.state.scale }} <br />
         hoveredShapeId: {{ boardContext.state.hoveredShapeId }} <br />
