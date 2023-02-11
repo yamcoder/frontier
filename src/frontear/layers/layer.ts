@@ -16,19 +16,21 @@ export class Layer {
     this.#shapeFactory = new ShapeFactory({ state: this.state, ctx2d: this.ctx2d });
 
     this.addShape({
-      type: 'circle',
+      type: 'ellipse',
       id: 2,
       x: 1750,
       y: 1550,
-      radius: 100,
+      width: 200,
+      height: 150,
       fillColor: '#D9D9D9'
     });
     this.addShape({
-      type: 'circle',
+      type: 'ellipse',
       id: 3,
       x: 1350,
       y: 1350,
-      radius: 100,
+      width: 200,
+      height: 200,
       fillColor: '#EAB96F'
     });
     this.addShape({

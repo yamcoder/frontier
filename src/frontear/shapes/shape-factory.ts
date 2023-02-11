@@ -1,32 +1,32 @@
 import type { Shape } from "./abstract-shape";
 import { Rectangle } from "./shapes-list/rectangle";
-import { Circle } from "./shapes-list/circle";
+import { Ellipse } from "./shapes-list/ellipse";
 import type { LayerContext } from "../layers/layer";
 
 export interface ShapeBaseOptions {
-  type: 'rectangle' | 'circle';
+  type: 'rectangle' | 'ellipse';
   id: number;
   x: number;
   y: number;
+  width: number;
+  height: number;
   fillColor: string;
 }
 
 export interface RectangleOptions extends ShapeBaseOptions {
   type: 'rectangle';
-  width: number;
-  height: number;
 }
 
-export interface CircleOptions extends ShapeBaseOptions {
-  type: 'circle';
-  radius: number;
+export interface EllipseOptions extends ShapeBaseOptions {
+  type: 'ellipse';
+  // radius: number;
 }
 
-export type ShapeOptions = RectangleOptions | CircleOptions
+export type ShapeOptions = RectangleOptions | EllipseOptions
 
 const isRectangleOptions = (options: ShapeOptions): options is RectangleOptions => options.type === 'rectangle';
 
-const isCircleOptions = (options: ShapeOptions): options is CircleOptions => options.type === 'circle';
+const isEllipseOptions = (options: ShapeOptions): options is EllipseOptions => options.type === 'ellipse';
 
 export class ShapeFactory {
   constructor(private context: LayerContext) { }
@@ -36,8 +36,8 @@ export class ShapeFactory {
       return new Rectangle({ context: this.context, options });
     }
 
-    if (isCircleOptions(options)) {
-      return new Circle({ context: this.context, options });
+    if (isEllipseOptions(options)) {
+      return new Ellipse({ context: this.context, options });
     }
 
     throw new Error('SHAPE_TYPE_ERROR');

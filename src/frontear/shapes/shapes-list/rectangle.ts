@@ -4,23 +4,17 @@ import type { RectangleOptions } from "../shape-factory";
 import type { LayerContext } from "@/frontear/layers/layer";
 
 export class Rectangle extends AbstractShape {
-  width: number;
-  height: number;
-
-  get areaWidth() { return this.width; }
-  get areaHeight() { return this.height; }
-
-  constructor({ context, options: { id, x, y, fillColor, height, width } }: {
+  constructor({ context, options }: {
     context: LayerContext;
     options: RectangleOptions;
   }) {
-    super(context, id, x, y, fillColor);
-
-    this.width = height;
-    this.height = width;
+    super(context, options);
   }
 
-  get checkIsHoverShape(): boolean {
+  get viewWidth() { return this.width * this.state.scale; }
+  get viewHeight() { return this.height * this.state.scale; }
+
+  get checkHoverShape(): boolean {
     return (this.state.pointerX >= this.x && this.state.pointerX <= this.x + this.width) &&
       (this.state.pointerY >= this.y && this.state.pointerY <= this.y + this.height);
   }
