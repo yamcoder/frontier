@@ -56,8 +56,8 @@ export abstract class AbstractShape implements Shape {
   };
   setX(x: number): void { this.x = x; };
   setY(y: number): void { this.y = y; };
-  setWidth(width: number): void { this.width = width };
-  setHeight(height: number): void { this.height = height };
+  setWidth(width: number): void { if (width >= 20) this.width = width };
+  setHeight(height: number): void { if (height >= 20) this.height = height };
 
   get viewLeftX() { return (this.x - this.state.viewportX) * this.state.scale; }
   get viewTopY() { return (this.y - this.state.viewportY) * this.state.scale; }

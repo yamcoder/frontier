@@ -14,6 +14,11 @@ export const shapeSize$ = (context: BoardContext) => {
     }),
     map(start => {
       const target = context.layer.shapes.find(el => el.id === context.state.selectedShapeId)!;
+      // let controlType: 'T' | 'R' | 'B' | 'L' | 'LT' | 'RT' | 'LB' | 'RB' = '';
+      let controlType = '';
+      if (context.state.isHoverShapeControlR) controlType = 'R';
+      if (context.state.isHoverShapeControlB) controlType = 'B';
+      if (context.state.isHoverShapeControlRB) controlType = 'RB';
 
       return {
         originalEvent: start,
@@ -21,10 +26,11 @@ export const shapeSize$ = (context: BoardContext) => {
         offsetY: start.clientY - (start.target as HTMLCanvasElement).offsetTop,
         deltaX: 0,
         deltaY: 0,
+        controlType,
         target: {
           shape: target,
-          startX: target.x,
-          startY: target.y,
+          startWidth: target.width,
+          startHeight: target.height,
         },
       }
     }),
@@ -39,8 +45,18 @@ export const shapeSize$ = (context: BoardContext) => {
         })),
         tap(move => {
           context.state.isSizing = true;
-          // start.target.shape.setX(start.target.startX + Math.round(move.deltaX / context.state.scale));
-          // start.target.shape.setY(start.target.startY + Math.round(move.deltaY / context.state.scale));
+
+          switch (start.controlType) {
+            case 'R': start.target.shape.setWidth(start.target.startWidth + Math.round(move.deltaX / context.state.scale)); break;
+            case 'B': start.target.shape.setHeight(start.target.startHeight + Math.round(move.deltaY / context.state.scale)); break;
+            case 'RB': {
+              start.target.shape.setWidth(start.target.startWidth + Math.round(move.deltaX / context.state.scale));
+              start.target.shape.setHeight(start.target.startHeight + Math.round(move.deltaY / context.state.scale));
+              break;
+            }
+            default:
+              break;
+          }
 
           context.layer.draw();
           context.stateChanges$.next(true);
@@ -48,6 +64,7 @@ export const shapeSize$ = (context: BoardContext) => {
         takeUntil(pointerUp$.pipe(
           tap(() => {
             context.state.isSizing = false;
+            context.stateChanges$.next(true);
           })
         ))
       )),
