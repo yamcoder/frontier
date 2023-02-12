@@ -2,6 +2,7 @@ import { AbstractShape } from "../abstract-shape";
 import { COLOR_BRAND } from "../../constants/colors";
 import type { RectangleOptions } from "../shape-factory";
 import type { LayerContext } from "@/frontear/layers/layer";
+import { drawWidthHeightSelected } from "@/frontear/draw-fns/draw-width-height-selected";
 
 export class Rectangle extends AbstractShape {
   constructor({ context, options }: {
@@ -43,5 +44,9 @@ export class Rectangle extends AbstractShape {
     );
     this.ctx2d.stroke();
     this.ctx2d.closePath();
+  }
+
+  drawSelected(): void {
+    return drawWidthHeightSelected(this);
   }
 }

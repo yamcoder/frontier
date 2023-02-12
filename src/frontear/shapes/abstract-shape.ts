@@ -1,5 +1,4 @@
 import { AREA_CORNER_HALF_SIDE } from '../constants/sizes';
-import { drawSelectedFn } from '../draw-fns/draw-selected';
 import type { LayerContext } from '../layers/layer';
 
 export interface Shape {
@@ -46,10 +45,7 @@ export abstract class AbstractShape implements Shape {
 
   abstract draw(): void;
   abstract drawHover(): void;
-
-  drawSelected(): void {
-    return drawSelectedFn(this);
-  }
+  abstract drawSelected(): void;
 
   setIsSelected(value: boolean): void {
     this.isSelected = value;

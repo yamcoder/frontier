@@ -2,7 +2,7 @@ import { COLOR_BOARD_BACKGROUND, COLOR_BRAND } from "../constants/colors";
 import { AREA_CORNER_HALF_SIDE, AREA_CORNER_SIDE, AREA_CORNER_THICKNESS } from "../constants/sizes";
 import type { AbstractShape } from "../shapes/abstract-shape";
 
-export const drawSelectedFn = (shapeInstance: AbstractShape) => {
+export const drawWidthHeightSelected = (shapeInstance: AbstractShape) => {
   shapeInstance.ctx2d.beginPath();
   shapeInstance.ctx2d.fillStyle = COLOR_BOARD_BACKGROUND;
   shapeInstance.ctx2d.strokeStyle = COLOR_BRAND;

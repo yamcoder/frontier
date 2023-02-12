@@ -2,6 +2,7 @@ import { AbstractShape } from "../abstract-shape";
 import { COLOR_BRAND } from "../../constants/colors";
 import type { EllipseOptions } from "../shape-factory";
 import type { LayerContext } from "@/frontear/layers/layer";
+import { drawWidthHeightSelected } from "@/frontear/draw-fns/draw-width-height-selected";
 
 export class Ellipse extends AbstractShape {
   constructor({ context, options }: {
@@ -54,5 +55,9 @@ export class Ellipse extends AbstractShape {
     );
     this.ctx2d.stroke();
     this.ctx2d.closePath();
+  }
+
+  drawSelected(): void {
+    return drawWidthHeightSelected(this);
   }
 }
