@@ -8,6 +8,7 @@ import { viewportZoom$ } from "../events/viewport-zoom.event";
 import { Layer } from "../layers/layer";
 import { BoardState } from "./board-state";
 import { shapeSize$ } from "../events/shape-size.event";
+import { keyDown$ } from "../events/keydown.event";
 
 export type BoardContext = {
   canvas: HTMLCanvasElement;
@@ -43,6 +44,7 @@ export class Board {
   }
 
   constructor() {
+    keyDown$(this.#context).subscribe();
     pointerMove$(this.#context).subscribe();
     viewportDrag$(this.#context).subscribe();
     viewportZoom$(this.#context).subscribe();

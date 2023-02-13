@@ -60,6 +60,36 @@ export class Layer {
     this.shapes.push(shape);
   }
 
+  moveSelectedToFront(): void {
+    const selectedIdx = this.shapes.findIndex(shape => shape.id === this.state.selectedShapeId);
+
+    const removedElement = this.shapes.splice(selectedIdx, 1);
+    this.shapes.push(...removedElement);
+  }
+
+  moveSelectedToBack(): void {
+    const selectedIdx = this.shapes.findIndex(shape => shape.id === this.state.selectedShapeId);
+
+    const removedElement = this.shapes.splice(selectedIdx, 1);
+    this.shapes.unshift(...removedElement);
+  }
+
+  moveSelectedToFrontByOne(): void {
+    const selectedIdx = this.shapes.findIndex(shape => shape.id === this.state.selectedShapeId);
+
+    if (selectedIdx + 1 === this.shapes.length) return;
+
+    this.shapes[selectedIdx] = this.shapes.splice(selectedIdx + 1, 1, this.shapes[selectedIdx])[0];
+  }
+
+  moveSelectedToBackByOne(): void {
+    const selectedIdx = this.shapes.findIndex(shape => shape.id === this.state.selectedShapeId);
+
+    if (selectedIdx === 0) return;
+
+    this.shapes[selectedIdx] = this.shapes.splice(selectedIdx - 1, 1, this.shapes[selectedIdx])[0];
+  }
+
   draw() {
     this.ctx2d.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawShapes();
