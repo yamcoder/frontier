@@ -60,6 +60,22 @@ export class Layer {
     this.shapes.push(shape);
   }
 
+  deleteSelected(): void {
+    const selectedIdx = this.shapes.findIndex(shape => shape.id === this.state.selectedShapeId);
+    this.shapes.splice(selectedIdx, 1);
+    this.state.selectedShapeId = 0;
+    this.checkHovers();
+    this.canvas.style.cursor = 'default';
+  }
+
+  unselectAll(): void {
+    const selectedShape = this.shapes.find(el => el.id === this.state.selectedShapeId);
+    selectedShape?.setIsSelected(false);
+    this.state.selectedShapeId = 0;
+    this.checkHovers();
+    this.canvas.style.cursor = 'default';
+  }
+
   moveSelectedToFront(): void {
     const selectedIdx = this.shapes.findIndex(shape => shape.id === this.state.selectedShapeId);
 
@@ -122,12 +138,24 @@ export class Layer {
       shape.checkHover();
     });
 
+    if (this.shapes.length === 0) {
+      this.state.hoveredShapeId = 0;
+    }
+
     const selectedShape = this.shapes.find(shape => shape.isSelected);
 
     if (selectedShape) {
       selectedShape.checkShapeControlHovers();
     } else {
       this.state.isHoverShapeControlArea = false;
+      this.state.isHoverShapeControlLT = false;
+      this.state.isHoverShapeControlRT = false;
+      this.state.isHoverShapeControlLB = false;
+      this.state.isHoverShapeControlRB = false;
+      this.state.isHoverShapeControlT = false;
+      this.state.isHoverShapeControlR = false;
+      this.state.isHoverShapeControlB = false;
+      this.state.isHoverShapeControlL = false;
     }
 
     for (let i = this.shapes.length - 1; i >= 0; i--) {

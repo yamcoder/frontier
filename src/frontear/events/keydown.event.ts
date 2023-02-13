@@ -8,6 +8,14 @@ export const keyDown$ = (context: BoardContext) => {
     tap(event => {
       if (context.state.selectedShapeId !== 0) {
 
+        if (event.code === 'Escape') {
+          context.layer.unselectAll();
+        }
+
+        if (event.code === 'Delete') {
+          context.layer.deleteSelected();
+        }
+
         if (!event.ctrlKey && event.code === 'BracketLeft') {
           context.layer.moveSelectedToBack();
         }
