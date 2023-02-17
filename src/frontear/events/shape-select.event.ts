@@ -1,11 +1,11 @@
 import { filter, fromEvent, switchMap, tap } from "rxjs";
-import type { BoardContext } from "../core/board";
+import type { BoardContext } from "../context/context";
 
 const selectHandler = (context: BoardContext) => {
   if (!context.state.isHoverShapeControlBoundary) {
     let selectedShapeId: number = 0;
 
-    context.layer.shapes.forEach(element => {
+    context.nodes.forEach(element => {
       if (element.id === context.state.hoveredShapeId) {
         element.setIsSelected(true);
         selectedShapeId = element.id;
@@ -15,9 +15,11 @@ const selectHandler = (context: BoardContext) => {
     });
     context.state.selectedShapeId = selectedShapeId;
 
-    context.layer.checkHovers();
-    context.layer.draw();
+    context.checkHovers();
+    context.draw();
     context.stateChanges$.next(true);
+    context.idbService.setState(context.state, 'boardState');
+    context.idbService.setState(context.nodes.map(({ context, ...rest }) => rest), 'nodes');
   }
 };
 

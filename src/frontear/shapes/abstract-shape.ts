@@ -1,8 +1,9 @@
 import { AREA_CORNER_HALF_SIDE } from '../constants/sizes';
-import type { LayerContext } from '../layers/layer';
+import type { LayerContext } from '../context/context';
 
 export interface Shape {
   context: LayerContext;
+  type: string;
   id: number;
   x: number;
   y: number;
@@ -31,6 +32,7 @@ export abstract class AbstractShape implements Shape {
   get offsetX() { return this.state.offsetX; }
   get offsetY() { return this.state.offsetY; }
 
+  type: string;
   id: number;
   x: number;
   y: number;
@@ -124,6 +126,7 @@ export abstract class AbstractShape implements Shape {
   }
 
   constructor(context: LayerContext, options: {
+    type: string;
     id: number;
     x: number;
     y: number;
@@ -132,6 +135,7 @@ export abstract class AbstractShape implements Shape {
     fillColor: string;
   }) {
     this.context = context;
+    this.type = options.type;
     this.id = options.id;
     this.x = options.x;
     this.y = options.y;

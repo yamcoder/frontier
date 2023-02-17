@@ -1,5 +1,5 @@
 import { fromEvent, filter, tap, map } from "rxjs";
-import type { BoardContext } from "../core/board";
+import type { BoardContext } from "../context/context";
 
 export const viewportZoom$ = (context: BoardContext) => {
   const wheel$ = fromEvent<WheelEvent>(context.canvas, 'wheel', { passive: false });
@@ -23,8 +23,9 @@ export const viewportZoom$ = (context: BoardContext) => {
       }
       context.state.viewportX = context.state.pointerX - Math.round(context.state.offsetX / newScale);
       context.state.viewportY = context.state.pointerY - Math.round(context.state.offsetY / newScale);
-      context.layer.draw();
+      context.draw();
       context.stateChanges$.next(true);
+      context.idbService.setState(context.state, 'boardState');
     })
   )
 }

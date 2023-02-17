@@ -1,5 +1,5 @@
 import { fromEvent, map, tap } from "rxjs";
-import type { BoardContext } from "../core/board";
+import type { BoardContext } from "../context/context";
 
 export const keyDown$ = (context: BoardContext) => {
   const keyDown$ = fromEvent<KeyboardEvent>(document, 'keydown');
@@ -9,31 +9,32 @@ export const keyDown$ = (context: BoardContext) => {
       if (context.state.selectedShapeId !== 0) {
 
         if (event.code === 'Escape') {
-          context.layer.unselectAll();
+          context.unselectAll();
         }
 
         if (event.code === 'Delete') {
-          context.layer.deleteSelected();
+          context.deleteSelected();
         }
 
         if (!event.ctrlKey && event.code === 'BracketLeft') {
-          context.layer.moveSelectedToBack();
+          context.moveSelectedToBack();
         }
 
         if (!event.ctrlKey && event.code === 'BracketRight') {
-          context.layer.moveSelectedToFront();
+          context.moveSelectedToFront();
         }
 
         if (event.ctrlKey && event.code === 'BracketLeft') {
-          context.layer.moveSelectedToBackByOne();
+          context.moveSelectedToBackByOne();
         }
 
         if (event.ctrlKey && event.code === 'BracketRight') {
-          context.layer.moveSelectedToFrontByOne();
+          context.moveSelectedToFrontByOne();
         }
 
-        context.layer.draw();
+        context.draw();
         context.stateChanges$.next(true);
+        context.idbService.setState(context.nodes.map(({ context, ...rest }) => rest), 'nodes');
       }
     })
   );

@@ -1,5 +1,5 @@
 import { filter, fromEvent, map, switchMap, takeUntil, tap } from "rxjs";
-import type { BoardContext } from "../core/board";
+import type { BoardContext } from "../context/context";
 
 export const viewportDrag$ = (context: BoardContext) => {
   const pointerDown$ = fromEvent<PointerEvent>(context.canvas, 'pointerdown');
@@ -40,12 +40,13 @@ export const viewportDrag$ = (context: BoardContext) => {
         tap(move => {
           context.state.viewportX = move.viewportX;
           context.state.viewportY = move.viewportY;
-          context.layer.draw();
+          context.draw();
           context.stateChanges$.next(true);
         }),
         takeUntil(pointerUp$.pipe(
           tap(() => {
             context.canvas.style.cursor = 'default';
+            context.idbService.setState(context.state, 'boardState');
           })))
       )),
   );

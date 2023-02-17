@@ -12,7 +12,7 @@ const boardContext = ref({
 
 onMounted(() => {
   board.mount(canvasContainerRef.value!);
-  board.stateChanges$.subscribe(() => {
+  board.context.stateChanges$.subscribe(() => {
     boardContext.value.shapes = board.shapes;
     boardContext.value.state = board.state;
   });

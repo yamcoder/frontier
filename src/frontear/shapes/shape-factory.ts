@@ -1,7 +1,7 @@
 import type { Shape } from "./abstract-shape";
 import { Rectangle } from "./shapes-list/rectangle";
 import { Ellipse } from "./shapes-list/ellipse";
-import type { LayerContext } from "../layers/layer";
+import type { LayerContext } from "../context/context";
 
 export interface ShapeBaseOptions {
   type: 'rectangle' | 'ellipse';

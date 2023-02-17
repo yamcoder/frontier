@@ -1,5 +1,5 @@
 import { fromEvent, filter, tap, map, switchMap, takeUntil } from "rxjs";
-import type { BoardContext } from "../core/board";
+import type { BoardContext } from "../context/context";
 import type { Shape } from "../shapes/abstract-shape";
 
 export const shapeDrag$ = (context: BoardContext) => {
@@ -18,9 +18,9 @@ export const shapeDrag$ = (context: BoardContext) => {
       let draggableShape: Shape;
 
       if (context.state.isHoverShapeControlArea) {
-        draggableShape = context.layer.shapes.find(el => el.id === context.state.selectedShapeId)!;
+        draggableShape = context.nodes.find(el => el.id === context.state.selectedShapeId)!;
       } else {
-        draggableShape = context.layer.shapes.find(el => el.id === context.state.hoveredShapeId)!;
+        draggableShape = context.nodes.find(el => el.id === context.state.hoveredShapeId)!;
       }
 
       return {
@@ -51,12 +51,13 @@ export const shapeDrag$ = (context: BoardContext) => {
           start.draggableShape.shape.setX(start.draggableShape.startX + Math.round(move.deltaX / context.state.scale));
           start.draggableShape.shape.setY(start.draggableShape.startY + Math.round(move.deltaY / context.state.scale));
 
-          context.layer.draw();
+          context.draw();
           context.stateChanges$.next(true);
         }),
         takeUntil(pointerUp$.pipe(
           tap(() => {
             context.state.isDragging = false;
+            context.idbService.setState(context.nodes.map(({ context, ...rest }) => rest), 'nodes');
           })
         ))
       )),

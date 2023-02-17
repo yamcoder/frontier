@@ -1,5 +1,5 @@
 import { fromEvent, filter, tap, map, switchMap, takeUntil } from "rxjs";
-import type { BoardContext } from "../core/board";
+import type { BoardContext } from "../context/context";
 
 export const shapeSize$ = (context: BoardContext) => {
   const pointerDown$ = fromEvent<PointerEvent>(context.canvas, 'pointerdown');
@@ -13,7 +13,7 @@ export const shapeSize$ = (context: BoardContext) => {
       context.canvas.setPointerCapture(start.pointerId);
     }),
     map(start => {
-      const target = context.layer.shapes.find(el => el.id === context.state.selectedShapeId)!;
+      const target = context.nodes.find(el => el.id === context.state.selectedShapeId)!;
       // let controlType: 'T' | 'R' | 'B' | 'L' | 'LT' | 'RT' | 'LB' | 'RB' = '';
       let controlType = '';
       if (context.state.isHoverShapeControlR) controlType = 'R';
@@ -58,13 +58,14 @@ export const shapeSize$ = (context: BoardContext) => {
               break;
           }
 
-          context.layer.draw();
+          context.draw();
           context.stateChanges$.next(true);
         }),
         takeUntil(pointerUp$.pipe(
           tap(() => {
             context.state.isSizing = false;
             context.stateChanges$.next(true);
+            context.idbService.setState(context.nodes.map(({ context, ...rest }) => rest), 'nodes');
           })
         ))
       )),

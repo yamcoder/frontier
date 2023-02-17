@@ -1,7 +1,7 @@
 import { AbstractShape } from "../abstract-shape";
 import { COLOR_BRAND } from "../../constants/colors";
 import type { RectangleOptions } from "../shape-factory";
-import type { LayerContext } from "@/frontear/layers/layer";
+import type { LayerContext } from "@/frontear/context/context";
 import { drawWidthHeightSelected } from "@/frontear/draw-fns/draw-width-height-selected";
 
 export class Rectangle extends AbstractShape {
