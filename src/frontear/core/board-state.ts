@@ -6,8 +6,8 @@ export class BoardState {
   pointerY: number = 0;
   offsetX: number = 0;
   offsetY: number = 0;
-  selectedShapeId: number = 0;
-  hoveredShapeId: number = 0;
+  selectedShapeId: string = '';
+  hoveredShapeId: string = '';
   isDragging: boolean = false;
   isSizing: boolean = false;
   isHoverShapeControlArea: boolean = false;

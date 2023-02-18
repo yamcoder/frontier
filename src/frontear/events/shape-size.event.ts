@@ -18,7 +18,12 @@ export const shapeSize$ = (context: BoardContext) => {
       let controlType = '';
       if (context.state.isHoverShapeControlR) controlType = 'R';
       if (context.state.isHoverShapeControlB) controlType = 'B';
+      if (context.state.isHoverShapeControlL) controlType = 'L';
+      if (context.state.isHoverShapeControlT) controlType = 'T';
       if (context.state.isHoverShapeControlRB) controlType = 'RB';
+      if (context.state.isHoverShapeControlLT) controlType = 'LT';
+      if (context.state.isHoverShapeControlRT) controlType = 'RT';
+      if (context.state.isHoverShapeControlLB) controlType = 'LB';
 
       return {
         originalEvent: start,
@@ -29,6 +34,8 @@ export const shapeSize$ = (context: BoardContext) => {
         controlType,
         target: {
           shape: target,
+          startX: target.x,
+          startY: target.y,
           startWidth: target.width,
           startHeight: target.height,
         },
@@ -47,10 +54,45 @@ export const shapeSize$ = (context: BoardContext) => {
           context.state.isSizing = true;
 
           switch (start.controlType) {
-            case 'R': start.target.shape.setWidth(start.target.startWidth + Math.round(move.deltaX / context.state.scale)); break;
-            case 'B': start.target.shape.setHeight(start.target.startHeight + Math.round(move.deltaY / context.state.scale)); break;
+            case 'R': {
+              start.target.shape.setWidth(start.target.startWidth + Math.round(move.deltaX / context.state.scale));
+              break;
+            }
+            case 'B': {
+              start.target.shape.setHeight(start.target.startHeight + Math.round(move.deltaY / context.state.scale));
+              break;
+            }
+            case 'L': {
+              start.target.shape.setX(start.target.startX + Math.round(move.deltaX / context.state.scale));
+              start.target.shape.setWidth(start.target.startWidth - Math.round(move.deltaX / context.state.scale));
+              break;
+            }
+            case 'T': {
+              start.target.shape.setY(start.target.startY + Math.round(move.deltaY / context.state.scale));
+              start.target.shape.setHeight(start.target.startHeight - Math.round(move.deltaY / context.state.scale));
+              break;
+            }
             case 'RB': {
               start.target.shape.setWidth(start.target.startWidth + Math.round(move.deltaX / context.state.scale));
+              start.target.shape.setHeight(start.target.startHeight + Math.round(move.deltaY / context.state.scale));
+              break;
+            }
+            case 'LT': {
+              start.target.shape.setX(start.target.startX + Math.round(move.deltaX / context.state.scale));
+              start.target.shape.setY(start.target.startY + Math.round(move.deltaY / context.state.scale));
+              start.target.shape.setWidth(start.target.startWidth - Math.round(move.deltaX / context.state.scale));
+              start.target.shape.setHeight(start.target.startHeight - Math.round(move.deltaY / context.state.scale));
+              break;
+            }
+            case 'RT': {
+              start.target.shape.setY(start.target.startY + Math.round(move.deltaY / context.state.scale));
+              start.target.shape.setHeight(start.target.startHeight - Math.round(move.deltaY / context.state.scale));
+              start.target.shape.setWidth(start.target.startWidth + Math.round(move.deltaX / context.state.scale));
+              break;
+            }
+            case 'LB': {
+              start.target.shape.setX(start.target.startX + Math.round(move.deltaX / context.state.scale));
+              start.target.shape.setWidth(start.target.startWidth - Math.round(move.deltaX / context.state.scale));
               start.target.shape.setHeight(start.target.startHeight + Math.round(move.deltaY / context.state.scale));
               break;
             }

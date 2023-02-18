@@ -10,7 +10,7 @@ export const shapeDrag$ = (context: BoardContext) => {
   return pointerDown$.pipe(
     filter(start => start.button === 0),
     filter(() => !context.state.isHoverShapeControlBoundary),
-    filter(() => context.state.isHoverShapeControlArea || context.state.hoveredShapeId !== 0),
+    filter(() => context.state.isHoverShapeControlArea || context.state.hoveredShapeId !== ''),
     tap(start => {
       context.canvas.setPointerCapture(start.pointerId);
     }),

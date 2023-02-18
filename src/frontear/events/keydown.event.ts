@@ -6,7 +6,7 @@ export const keyDown$ = (context: BoardContext) => {
 
   return keyDown$.pipe(
     tap(event => {
-      if (context.state.selectedShapeId !== 0) {
+      if (context.state.selectedShapeId !== '') {
 
         if (event.code === 'Escape') {
           context.unselectAll();

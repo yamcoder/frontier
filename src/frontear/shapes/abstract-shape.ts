@@ -4,7 +4,7 @@ import type { LayerContext } from '../context/context';
 export interface Shape {
   context: LayerContext;
   type: string;
-  id: number;
+  id: string;
   x: number;
   y: number;
   width: number;
@@ -33,7 +33,7 @@ export abstract class AbstractShape implements Shape {
   get offsetY() { return this.state.offsetY; }
 
   type: string;
-  id: number;
+  id: string;
   x: number;
   y: number;
 
@@ -127,7 +127,7 @@ export abstract class AbstractShape implements Shape {
 
   constructor(context: LayerContext, options: {
     type: string;
-    id: number;
+    id: string;
     x: number;
     y: number;
     width: number;

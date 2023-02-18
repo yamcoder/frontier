@@ -3,7 +3,7 @@ import type { BoardContext } from "../context/context";
 
 const selectHandler = (context: BoardContext) => {
   if (!context.state.isHoverShapeControlBoundary) {
-    let selectedShapeId: number = 0;
+    let selectedShapeId: string = '';
 
     context.nodes.forEach(element => {
       if (element.id === context.state.hoveredShapeId) {

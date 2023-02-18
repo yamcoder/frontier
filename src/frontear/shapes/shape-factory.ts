@@ -5,7 +5,7 @@ import type { LayerContext } from "../context/context";
 
 export interface ShapeBaseOptions {
   type: 'rectangle' | 'ellipse';
-  id: number;
+  id: string;
   x: number;
   y: number;
   width: number;

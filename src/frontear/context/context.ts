@@ -3,6 +3,7 @@ import { BoardState } from '../core/board-state';
 import type { Shape } from "../shapes/abstract-shape";
 import { IDBService } from "../services/idb.service";
 import { Subject } from "rxjs";
+import { v4 as uuid } from 'uuid';
 
 export type LayerContext = {
   ctx2d: CanvasRenderingContext2D;
@@ -20,48 +21,46 @@ export class BoardContext {
 
   nodes: Shape[] = [];
 
-  constructor(
-
-  ) {
+  constructor() {
     this.#shapeFactory = new ShapeFactory({ state: this.state, ctx2d: this.ctx2d });
 
     this.idbService
       .getState("nodes")
       .then(nodes => {
-        if (Array.isArray(nodes)) {
+        if (Array.isArray(nodes) && nodes.length !== 0) {
           nodes.forEach(node => {
             this.addShape(node);
           });
+        } else {
+          this.addShape({
+            type: 'ellipse',
+            id: uuid(),
+            x: 1750,
+            y: 1550,
+            width: 200,
+            height: 150,
+            fillColor: '#D9D9D9'
+          });
+          this.addShape({
+            type: 'ellipse',
+            id: uuid(),
+            x: 1350,
+            y: 1350,
+            width: 200,
+            height: 200,
+            fillColor: '#EAB96F'
+          });
+          this.addShape({
+            type: 'rectangle',
+            id: uuid(),
+            x: 1200,
+            y: 1200,
+            width: 200,
+            height: 200,
+            fillColor: '#B5E1CC'
+          });
         }
       })
-
-    // this.addShape({
-    //   type: 'ellipse',
-    //   id: 2,
-    //   x: 1750,
-    //   y: 1550,
-    //   width: 200,
-    //   height: 150,
-    //   fillColor: '#D9D9D9'
-    // });
-    // this.addShape({
-    //   type: 'ellipse',
-    //   id: 3,
-    //   x: 1350,
-    //   y: 1350,
-    //   width: 200,
-    //   height: 200,
-    //   fillColor: '#EAB96F'
-    // });
-    // this.addShape({
-    //   type: 'rectangle',
-    //   id: 1,
-    //   x: 1200,
-    //   y: 1200,
-    //   width: 200,
-    //   height: 200,
-    //   fillColor: '#B5E1CC'
-    // });
   }
 
   get shapesList() {
@@ -69,7 +68,7 @@ export class BoardContext {
   }
 
   getSelectedShape() {
-    if (this.state.selectedShapeId !== 0) {
+    if (this.state.selectedShapeId !== '') {
       const selectedShape = this.nodes.find(el => el.id === this.state.selectedShapeId);
       return selectedShape;
     }
@@ -83,7 +82,7 @@ export class BoardContext {
   deleteSelected(): void {
     const selectedIdx = this.nodes.findIndex(shape => shape.id === this.state.selectedShapeId);
     this.nodes.splice(selectedIdx, 1);
-    this.state.selectedShapeId = 0;
+    this.state.selectedShapeId = '';
     this.checkHovers();
     this.canvas.style.cursor = 'default';
   }
@@ -91,7 +90,7 @@ export class BoardContext {
   unselectAll(): void {
     const selectedShape = this.nodes.find(el => el.id === this.state.selectedShapeId);
     selectedShape?.setIsSelected(false);
-    this.state.selectedShapeId = 0;
+    this.state.selectedShapeId = '';
     this.checkHovers();
     this.canvas.style.cursor = 'default';
   }
@@ -140,14 +139,14 @@ export class BoardContext {
   }
 
   private drawHover(): void {
-    if (this.state.hoveredShapeId !== 0 && this.state.hoveredShapeId !== this.state.selectedShapeId) {
+    if (this.state.hoveredShapeId !== '' && this.state.hoveredShapeId !== this.state.selectedShapeId) {
       const hoverElement = this.nodes.find(el => el.id === this.state.hoveredShapeId);
       hoverElement?.drawHover();
     }
   }
 
   private drawSelected(): void {
-    if (this.state.selectedShapeId !== 0) {
+    if (this.state.selectedShapeId !== '') {
       const selectedElement = this.nodes.find(el => el.id === this.state.selectedShapeId);
       selectedElement?.drawSelected();
     }
@@ -159,7 +158,7 @@ export class BoardContext {
     });
 
     if (this.nodes.length === 0) {
-      this.state.hoveredShapeId = 0;
+      this.state.hoveredShapeId = '';
     }
 
     const selectedShape = this.nodes.find(shape => shape.isSelected);
@@ -186,7 +185,7 @@ export class BoardContext {
         break;
       }
 
-      this.state.hoveredShapeId = 0;
+      this.state.hoveredShapeId = '';
     }
   }
 

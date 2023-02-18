@@ -32,7 +32,7 @@ onMounted(() => {
         Pointer: [{{ boardContext.state.pointerX }}, {{ boardContext.state.pointerY }}]<br />
         Scale: {{ boardContext.state.scale }} <br />
         hoveredShapeId: {{ boardContext.state.hoveredShapeId }} <br />
-        selectedShapeId: {{ JSON.stringify(boardContext.state.selectedShapeId) }} <br />
+        selectedShapeId: {{ boardContext.state.selectedShapeId }} <br />
         isDragging: {{ boardContext.state.isDragging }} <br />
         isSizing: {{ boardContext.state.isSizing }} <br />
         isHoverShapeControlArea: {{ boardContext.state.isHoverShapeControlArea }} <br />
