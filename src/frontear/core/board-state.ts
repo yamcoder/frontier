@@ -20,6 +20,9 @@ export class BoardState {
   isHoverShapeControlB: boolean = false;
   isHoverShapeControlL: boolean = false;
 
+  beingCreatedNode: 'rectangle' | 'ellipse' | null = null;
+  isCreating: boolean = false;
+
   get isHoverShapeControlBoundary(): boolean {
     return (
       this.isHoverShapeControlB ||

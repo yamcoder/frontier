@@ -7,6 +7,7 @@ import { viewportZoom$ } from "../events/viewport-zoom.event";
 import { BoardContext } from "../context/context";
 import { shapeSize$ } from "../events/shape-size.event";
 import { keyDown$ } from "../events/keydown.event";
+import { nodeCreate$ } from "../events/node-create.event";
 
 export class Board {
   readonly context: BoardContext;
@@ -29,6 +30,7 @@ export class Board {
     shapeSelect$(this.context).subscribe();
     shapeDrag$(this.context).subscribe();
     shapeSize$(this.context).subscribe();
+    nodeCreate$(this.context).subscribe();
 
     this.context.idbService.getState('boardState')
       .then(state => {

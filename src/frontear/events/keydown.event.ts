@@ -36,6 +36,18 @@ export const keyDown$ = (context: BoardContext) => {
         context.stateChanges$.next(true);
         context.idbService.setState(context.nodes.map(({ context, ...rest }) => rest), 'nodes');
       }
+
+      if (event.code === 'KeyR') {
+        context.state.beingCreatedNode = 'rectangle';
+        context.canvas.style.cursor = 'crosshair';
+        context.stateChanges$.next(true);
+      }
+
+      if (event.code === 'KeyE') {
+        context.state.beingCreatedNode = 'ellipse';
+        context.canvas.style.cursor = 'crosshair';
+        context.stateChanges$.next(true);
+      }
     })
   );
 }

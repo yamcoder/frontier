@@ -28,9 +28,11 @@ onMounted(() => {
     <aside>
       <div class="aside">
         Viewport: [{{ boardContext.state.viewportX }}, {{ boardContext.state.viewportY }}] <br />
-        Offset: [{{ boardContext.state.offsetX }}, {{ boardContext.state.offsetY }}] <br />
         Pointer: [{{ boardContext.state.pointerX }}, {{ boardContext.state.pointerY }}]<br />
+        Offset: [{{ boardContext.state.offsetX }}, {{ boardContext.state.offsetY }}] <br />
         Scale: {{ boardContext.state.scale }} <br />
+        beingCreatedNode: {{ boardContext.state.beingCreatedNode }} <br />
+        isCreating: {{ boardContext.state.isCreating }} <br />
         hoveredShapeId: {{ boardContext.state.hoveredShapeId }} <br />
         selectedShapeId: {{ boardContext.state.selectedShapeId }} <br />
         isDragging: {{ boardContext.state.isDragging }} <br />
@@ -91,6 +93,8 @@ main {
 
 aside {
   grid-area: aside;
+
+  overflow: scroll;
 }
 
 .aside {
