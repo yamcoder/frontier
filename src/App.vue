@@ -1,9 +1,19 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
+import SelectButton, { type SelectButtonChangeEvent } from 'primevue/selectbutton';
+
 import { Board } from "./frontear";
 
 const canvasContainerRef = ref<HTMLElement>();
 const board = new Board();
+const createdNodeType = ref(board.state.beingCreatedNode);
+const createdNodeOptions = ref([
+  { type: 'rectangle', label: 'Прямоугольник' },
+  { type: 'ellipse', label: 'Эллипс' },
+]);
+const createNode = (event: SelectButtonChangeEvent) => {
+  board.createNode(event.value);
+};
 
 const boardContext = ref({
   shapes: board.shapes,
@@ -15,6 +25,7 @@ onMounted(() => {
   board.context.stateChanges$.subscribe(() => {
     boardContext.value.shapes = board.shapes;
     boardContext.value.state = board.state;
+    createdNodeType.value = board.state.beingCreatedNode;
   });
 });
 </script>
@@ -23,6 +34,16 @@ onMounted(() => {
   <div class="container">
     <header class="header">
       <span class="header__title"></span>
+      <div class="header__actions">
+        <SelectButton
+          v-model="createdNodeType"
+          :options="createdNodeOptions"
+          optionLabel="label"
+          optionValue="type"
+          aria-labelledby="single"
+          @change="createNode"
+        />
+      </div>
     </header>
     <main ref="canvasContainerRef"></main>
     <aside>
@@ -79,6 +100,10 @@ onMounted(() => {
 
   text-align: center;
   font-size: 2rem;
+}
+
+.header__actions {
+  flex: 1;
 }
 
 header {

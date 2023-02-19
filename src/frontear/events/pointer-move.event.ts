@@ -29,6 +29,8 @@ export const pointerMove$ = (context: BoardContext) => {
         context.canvas.style.cursor = 'ns-resize';
       } else if (context.state.isHoverShapeControlL || context.state.isHoverShapeControlR) {
         context.canvas.style.cursor = 'ew-resize';
+      } else if (context.state.beingCreatedNode) {
+        context.canvas.style.cursor = 'crosshair';
       } else {
         context.canvas.style.cursor = 'default';
       }

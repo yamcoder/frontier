@@ -20,6 +20,10 @@ export class Board {
     return this.context.shapesList;
   }
 
+  createNode(nodeType: 'rectangle' | 'ellipse'): void {
+    this.state.beingCreatedNode = nodeType;
+  }
+
   constructor() {
     this.context = new BoardContext();
 
