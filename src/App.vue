@@ -2,30 +2,30 @@
 import { onMounted, ref } from "vue";
 import SelectButton, { type SelectButtonChangeEvent } from 'primevue/selectbutton';
 
-import { Board } from "./frontear";
+import { Board } from "./frontier";
 
 const canvasContainerRef = ref<HTMLElement>();
 const board = new Board();
-const createdNodeType = ref(board.state.beingCreatedNode);
+const createdNodeType = ref(board.scene.beingCreatedNodeType);
 const createdNodeOptions = ref([
-  { type: 'rectangle', label: 'Прямоугольник' },
-  { type: 'ellipse', label: 'Эллипс' },
+  { type: 'RECTANGLE', label: 'Прямоугольник' },
+  { type: 'ELLIPSE', label: 'Эллипс' },
 ]);
 const createNode = (event: SelectButtonChangeEvent) => {
   board.createNode(event.value);
 };
 
-const boardContext = ref({
-  shapes: board.shapes,
-  state: board.state,
+const sceneContext = ref({
+  nodes: board.nodes,
+  scene: board.scene,
 });
 
 onMounted(() => {
   board.mount(canvasContainerRef.value!);
   board.context.stateChanges$.subscribe(() => {
-    boardContext.value.shapes = board.shapes;
-    boardContext.value.state = board.state;
-    createdNodeType.value = board.state.beingCreatedNode;
+    sceneContext.value.nodes = board.nodes;
+    sceneContext.value.scene = board.scene;
+    createdNodeType.value = board.scene.beingCreatedNodeType;
   });
 });
 </script>
@@ -48,29 +48,22 @@ onMounted(() => {
     <main ref="canvasContainerRef"></main>
     <aside>
       <div class="aside">
-        Viewport: [{{ boardContext.state.viewportX }}, {{ boardContext.state.viewportY }}] <br />
-        Pointer: [{{ boardContext.state.pointerX }}, {{ boardContext.state.pointerY }}]<br />
-        Offset: [{{ boardContext.state.offsetX }}, {{ boardContext.state.offsetY }}] <br />
-        Scale: {{ boardContext.state.scale }} <br />
-        beingCreatedNode: {{ boardContext.state.beingCreatedNode }} <br />
-        isCreating: {{ boardContext.state.isCreating }} <br />
-        hoveredShapeId: {{ boardContext.state.hoveredShapeId }} <br />
-        selectedShapeId: {{ boardContext.state.selectedShapeId }} <br />
-        isDragging: {{ boardContext.state.isDragging }} <br />
-        isSizing: {{ boardContext.state.isSizing }} <br />
-        isHoverShapeControlArea: {{ boardContext.state.isHoverShapeControlArea }} <br />
-        isHoverShapeControlBoundary: {{ boardContext.state.isHoverShapeControlBoundary }} <br />
-        isHoverShapeControlLT: {{ boardContext.state.isHoverShapeControlLT }} <br />
-        isHoverShapeControlRT: {{ boardContext.state.isHoverShapeControlRT }} <br />
-        isHoverShapeControlLB: {{ boardContext.state.isHoverShapeControlLB }} <br />
-        isHoverShapeControlRB: {{ boardContext.state.isHoverShapeControlRB }} <br />
-        isHoverShapeControlT: {{ boardContext.state.isHoverShapeControlT }} <br />
-        isHoverShapeControlR: {{ boardContext.state.isHoverShapeControlR }} <br />
-        isHoverShapeControlB: {{ boardContext.state.isHoverShapeControlB }} <br />
-        isHoverShapeControlL: {{ boardContext.state.isHoverShapeControlL }} <br />
+        Viewport: [{{ sceneContext.scene.viewportX }}, {{ sceneContext.scene.viewportY }}] <br />
+        Pointer: [{{ sceneContext.scene.pointerX }}, {{ sceneContext.scene.pointerY }}]<br />
+        Offset: [{{ sceneContext.scene.offsetX }}, {{ sceneContext.scene.offsetY }}] <br />
+        Scale: {{ sceneContext.scene.scale }} <br />
+        hoveredNodeId: {{ sceneContext.scene.hoveredNodeId }} <br />
+        selectedNodeId: {{ sceneContext.scene.selectedNodeId }} <br />
+        beingCreatedNode: {{ sceneContext.scene.beingCreatedNodeType }} <br />
+        isCreating: {{ sceneContext.scene.isCreating }} <br />
+        isDragging: {{ sceneContext.scene.isDragging }} <br />
+        isResizing: {{ sceneContext.scene.isResizing }} <br />
+        isHoverSelectedNodeArea: {{ sceneContext.scene.isHoverSelectedNodeArea }} <br />
+        isHoverResizeControls: {{ sceneContext.scene.isHoverResizeControls }} <br />
+        isHoverResizeControl: <pre>{{ JSON.stringify(sceneContext.scene.isHoverResizeControl, null, 2) }}</pre> <br />
         <ul>
-          <li v-for="shape in boardContext.shapes">
-            {{ JSON.stringify(shape, null, 2) }}
+          <li v-for="node in sceneContext.nodes">
+            {{ JSON.stringify(node, null, 2) }}
           </li>
         </ul>
       </div>

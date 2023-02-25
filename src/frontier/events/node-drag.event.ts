@@ -1,26 +1,27 @@
 import { fromEvent, filter, tap, map, switchMap, takeUntil } from "rxjs";
-import type { BoardContext } from "../context/context";
-import type { Shape } from "../shapes/abstract-shape";
+import { POINTER_LEFT_BUTTON } from "../constants/event.constants";
+import type { SceneContext } from "../core/scene-context";
+import type { Node } from "../nodes/abstract-node";
 
-export const shapeDrag$ = (context: BoardContext) => {
+export const nodeDrag$ = (context: SceneContext) => {
   const pointerDown$ = fromEvent<PointerEvent>(context.canvas, 'pointerdown');
   const pointerMove$ = fromEvent<PointerEvent>(context.canvas, 'pointermove');
   const pointerUp$ = fromEvent<PointerEvent>(context.canvas, 'pointerup');
 
   return pointerDown$.pipe(
-    filter(start => start.button === 0),
-    filter(() => !context.state.isHoverShapeControlBoundary),
-    filter(() => context.state.isHoverShapeControlArea || context.state.hoveredShapeId !== ''),
+    filter(start => start.button === POINTER_LEFT_BUTTON),
+    filter(() => !context.scene.isHoverResizeControls),
+    filter(() => context.scene.isHoverSelectedNodeArea || context.scene.hoveredNodeId !== null),
     tap(start => {
       context.canvas.setPointerCapture(start.pointerId);
     }),
     map(start => {
-      let draggableShape: Shape;
+      let draggableNode: Node;
 
-      if (context.state.isHoverShapeControlArea) {
-        draggableShape = context.nodes.find(el => el.id === context.state.selectedShapeId)!;
+      if (context.scene.isHoverSelectedNodeArea) {
+        draggableNode = context.nodes.find(node => node.id === context.scene.selectedNodeId)!;
       } else {
-        draggableShape = context.nodes.find(el => el.id === context.state.hoveredShapeId)!;
+        draggableNode = context.nodes.find(node => node.id === context.scene.hoveredNodeId)!;
       }
 
       return {
@@ -29,10 +30,10 @@ export const shapeDrag$ = (context: BoardContext) => {
         offsetY: start.clientY - (start.target as HTMLCanvasElement).offsetTop,
         deltaX: 0,
         deltaY: 0,
-        draggableShape: {
-          shape: draggableShape,
-          startX: draggableShape.x,
-          startY: draggableShape.y,
+        draggableNode: {
+          node: draggableNode,
+          startX: draggableNode.x,
+          startY: draggableNode.y,
         },
       }
     }),
@@ -46,18 +47,18 @@ export const shapeDrag$ = (context: BoardContext) => {
           deltaY: move.clientY - start.originalEvent.clientY,
         })),
         tap(move => {
-          context.state.isDragging = true;
+          context.scene.isDragging = true;
 
-          start.draggableShape.shape.setX(start.draggableShape.startX + Math.round(move.deltaX / context.state.scale));
-          start.draggableShape.shape.setY(start.draggableShape.startY + Math.round(move.deltaY / context.state.scale));
+          start.draggableNode.node.setX(start.draggableNode.startX + Math.round(move.deltaX / context.scene.scale));
+          start.draggableNode.node.setY(start.draggableNode.startY + Math.round(move.deltaY / context.scene.scale));
 
           context.draw();
           context.stateChanges$.next(true);
         }),
         takeUntil(pointerUp$.pipe(
           tap(() => {
-            context.state.isDragging = false;
-            context.idbService.setState(context.nodes.map(({ context, ...rest }) => rest), 'nodes');
+            context.scene.isDragging = false;
+            context.idbService.setNodes(context.nodes);
           })
         ))
       )),

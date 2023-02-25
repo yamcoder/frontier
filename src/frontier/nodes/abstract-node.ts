@@ -1,8 +1,9 @@
-import { AREA_CORNER_HALF_SIDE } from '../constants/sizes';
-import type { LayerContext } from '../context/context';
+import { AREA_CORNER_HALF_SIDE } from '../constants/size.constants';
+import type { Scene } from '../core/scene';
 
-export interface Shape {
-  context: LayerContext;
+export interface Node {
+  ctx: CanvasRenderingContext2D;
+  scene: Scene;
   type: string;
   id: string;
   x: number;
@@ -13,24 +14,23 @@ export interface Shape {
   isSelected: boolean;
   isHovered: boolean;
   checkHover(): void;
-  checkShapeControlHovers(): void;
+  checkNodeControlHovers(): void;
   draw(): void;
   drawHover(): void;
   drawSelected(): void;
   setIsSelected(value: boolean): void;
-  setX(x: number): void;
-  setY(x: number): void;
-  setWidth(width: number): void;
-  setHeight(height: number): void;
+  setX(value: number): void;
+  setY(value: number): void;
+  setWidth(value: number): void;
+  setHeight(value: number): void;
 }
 
-export abstract class AbstractShape implements Shape {
-  context: LayerContext;
-  get state() { return this.context.state };
-  get ctx2d() { return this.context.ctx2d };
+export abstract class AbstractNode implements Node {
+  ctx: CanvasRenderingContext2D;
+  scene: Scene;
 
-  get offsetX() { return this.state.offsetX; }
-  get offsetY() { return this.state.offsetY; }
+  get offsetX() { return this.scene.offsetX; }
+  get offsetY() { return this.scene.offsetY; }
 
   type: string;
   id: string;
@@ -52,80 +52,80 @@ export abstract class AbstractShape implements Shape {
   setIsSelected(value: boolean): void {
     this.isSelected = value;
   };
-  setX(x: number): void { this.x = x; };
-  setY(y: number): void { this.y = y; };
-  setWidth(width: number): void { if (width >= 20) this.width = width };
-  setHeight(height: number): void { if (height >= 20) this.height = height };
+  setX(value: number): void { this.x = value; };
+  setY(value: number): void { this.y = value; };
+  setWidth(value: number): void { if (value >= 20) this.width = value };
+  setHeight(value: number): void { if (value >= 20) this.height = value };
 
-  get viewLeftX() { return (this.x - this.state.viewportX) * this.state.scale; }
-  get viewTopY() { return (this.y - this.state.viewportY) * this.state.scale; }
-  get viewRightX() { return (this.x - this.state.viewportX + this.width) * this.state.scale; }
-  get viewBottomY() { return (this.y - this.state.viewportY + this.height) * this.state.scale; }
+  get viewLeftX() { return (this.x - this.scene.viewportX) * this.scene.scale; }
+  get viewTopY() { return (this.y - this.scene.viewportY) * this.scene.scale; }
+  get viewRightX() { return (this.x - this.scene.viewportX + this.width) * this.scene.scale; }
+  get viewBottomY() { return (this.y - this.scene.viewportY + this.height) * this.scene.scale; }
 
-  abstract get checkHoverShape(): boolean;
+  abstract get checkHoverNode(): boolean;
 
-  get checkHoverShapeControlArea(): boolean {
+  get checkHoverSelectedNodeArea(): boolean {
     return (this.offsetX > this.viewLeftX + AREA_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - AREA_CORNER_HALF_SIDE) &&
       (this.offsetY > this.viewTopY + AREA_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - AREA_CORNER_HALF_SIDE);
   };
 
-  get checkHoverShapeControlLT(): boolean {
+  get checkHoverResizeControlNW(): boolean {
     return (this.offsetX >= this.viewLeftX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + AREA_CORNER_HALF_SIDE) &&
       (this.offsetY >= this.viewTopY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + AREA_CORNER_HALF_SIDE);
   }
 
-  get checkHoverShapeControlRT(): boolean {
+  get checkHoverResizeControlNE(): boolean {
     return (this.offsetX >= this.viewRightX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + AREA_CORNER_HALF_SIDE) &&
       (this.offsetY >= this.viewTopY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + AREA_CORNER_HALF_SIDE);
   }
 
-  get checkHoverShapeControlLB(): boolean {
+  get checkHoverResizeControlSW(): boolean {
     return (this.offsetX >= this.viewLeftX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + AREA_CORNER_HALF_SIDE) &&
       (this.offsetY >= this.viewBottomY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + AREA_CORNER_HALF_SIDE);
   }
 
-  get checkHoverShapeControlRB(): boolean {
+  get checkHoverResizeControlSE(): boolean {
     return (this.offsetX >= this.viewRightX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + AREA_CORNER_HALF_SIDE) &&
       (this.offsetY >= this.viewBottomY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + AREA_CORNER_HALF_SIDE);
   }
 
-  get checkHoverShapeControlT(): boolean {
+  get checkHoverResizeControlN(): boolean {
     return (this.offsetX > this.viewLeftX + AREA_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - AREA_CORNER_HALF_SIDE) &&
       (this.offsetY >= this.viewTopY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + AREA_CORNER_HALF_SIDE);
   }
 
-  get checkHoverShapeControlR(): boolean {
+  get checkHoverResizeControlE(): boolean {
     return (this.offsetX >= this.viewRightX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + AREA_CORNER_HALF_SIDE) &&
       (this.offsetY > this.viewTopY + AREA_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - AREA_CORNER_HALF_SIDE);
   }
 
-  get checkHoverShapeControlB(): boolean {
+  get checkHoverResizeControlS(): boolean {
     return (this.offsetX > this.viewLeftX + AREA_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - AREA_CORNER_HALF_SIDE) &&
       (this.offsetY >= this.viewBottomY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + AREA_CORNER_HALF_SIDE);
   }
 
-  get checkHoverShapeControlL(): boolean {
+  get checkHoverResizeControlW(): boolean {
     return (this.offsetX >= this.viewLeftX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + AREA_CORNER_HALF_SIDE) &&
       (this.offsetY > this.viewTopY + AREA_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - AREA_CORNER_HALF_SIDE);
   }
 
   checkHover(): void {
-    this.isHovered = this.checkHoverShape;
+    this.isHovered = this.checkHoverNode;
   }
 
-  checkShapeControlHovers(): void {
-    this.state.isHoverShapeControlArea = this.checkHoverShapeControlArea;
-    this.state.isHoverShapeControlLT = this.checkHoverShapeControlLT;
-    this.state.isHoverShapeControlRT = this.checkHoverShapeControlRT;
-    this.state.isHoverShapeControlLB = this.checkHoverShapeControlLB;
-    this.state.isHoverShapeControlRB = this.checkHoverShapeControlRB;
-    this.state.isHoverShapeControlT = this.checkHoverShapeControlT;
-    this.state.isHoverShapeControlR = this.checkHoverShapeControlR;
-    this.state.isHoverShapeControlB = this.checkHoverShapeControlB;
-    this.state.isHoverShapeControlL = this.checkHoverShapeControlL;
+  checkNodeControlHovers(): void {
+    this.scene.isHoverSelectedNodeArea = this.checkHoverSelectedNodeArea;
+    this.scene.isHoverResizeControl.NW = this.checkHoverResizeControlNW;
+    this.scene.isHoverResizeControl.NE = this.checkHoverResizeControlNE;
+    this.scene.isHoverResizeControl.SW = this.checkHoverResizeControlSW;
+    this.scene.isHoverResizeControl.SE = this.checkHoverResizeControlSE;
+    this.scene.isHoverResizeControl.N = this.checkHoverResizeControlN;
+    this.scene.isHoverResizeControl.E = this.checkHoverResizeControlE;
+    this.scene.isHoverResizeControl.S = this.checkHoverResizeControlS;
+    this.scene.isHoverResizeControl.W = this.checkHoverResizeControlW;
   }
 
-  constructor(context: LayerContext, options: {
+  constructor(ctx: CanvasRenderingContext2D, scene: Scene, options: {
     type: string;
     id: string;
     x: number;
@@ -134,7 +134,8 @@ export abstract class AbstractShape implements Shape {
     height: number;
     fillColor: string;
   }) {
-    this.context = context;
+    this.ctx = ctx;
+    this.scene = scene;
     this.type = options.type;
     this.id = options.id;
     this.x = options.x;

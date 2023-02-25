@@ -1,35 +1,35 @@
 import { fromEvent, filter, tap, map, switchMap, takeUntil } from "rxjs";
 import { v4 as uuid } from "uuid";
-import type { BoardContext } from "../context/context";
+import { POINTER_LEFT_BUTTON } from "../constants/event.constants";
+import type { SceneContext } from "../core/scene-context";
 import { getRandomColor } from "../helpers/get-random-color";
-import type { Shape } from "../shapes/abstract-shape";
 
-export const nodeCreate$ = (context: BoardContext) => {
+export const nodeCreate$ = (context: SceneContext) => {
   const pointerDown$ = fromEvent<PointerEvent>(context.canvas, 'pointerdown');
   const pointerMove$ = fromEvent<PointerEvent>(context.canvas, 'pointermove');
   const pointerUp$ = fromEvent<PointerEvent>(context.canvas, 'pointerup');
 
   return pointerDown$.pipe(
-    filter(() => context.state.beingCreatedNode !== null),
-    filter(start => start.button === 0),
+    filter(() => context.scene.beingCreatedNodeType !== null),
+    filter(start => start.button === POINTER_LEFT_BUTTON),
     tap(start => {
       context.canvas.setPointerCapture(start.pointerId);
     }),
     map(start => {
       const id = uuid();
 
-      context.addShape({
-        type: context.state.beingCreatedNode as any,
+      context.addNode({
+        type: context.scene.beingCreatedNodeType as any,
         id,
-        x: context.state.pointerX,
-        y: context.state.pointerY,
+        x: context.scene.pointerX,
+        y: context.scene.pointerY,
         width: 100,
         height: 100,
         fillColor: getRandomColor()
       });
 
       const node = context.nodes.find(node => node.id === id)!;
-      context.state.selectedShapeId = id;
+      context.scene.selectedNodeId = id;
       node.setIsSelected(true);
       context.checkHovers();
 
@@ -52,7 +52,7 @@ export const nodeCreate$ = (context: BoardContext) => {
           deltaY: move.clientY - start.originalEvent.clientY,
         })),
         tap(move => {
-          context.state.isCreating = true;
+          context.scene.isCreating = true;
           context.checkHovers();
           context.draw();
           context.stateChanges$.next(true);
@@ -60,18 +60,18 @@ export const nodeCreate$ = (context: BoardContext) => {
         takeUntil(pointerUp$.pipe(
           tap(() => {
 
-            if (context.state.isCreating === false) {
+            if (context.scene.isCreating === false) {
               start.node.setX(start.node.x - 50);
               start.node.setY(start.node.y - 50);
             }
 
-            context.state.isCreating = false;
-            context.state.beingCreatedNode = null;
+            context.scene.isCreating = false;
+            context.scene.beingCreatedNodeType = null;
             context.canvas.style.cursor = 'default';
             context.checkHovers();
             context.draw();
             context.stateChanges$.next(true);
-            context.idbService.setState(context.nodes.map(({ context, ...rest }) => rest), 'nodes');
+            context.idbService.setNodes(context.nodes);
           })
         ))
       )),

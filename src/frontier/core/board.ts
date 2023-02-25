@@ -1,44 +1,43 @@
-import { COLOR_BOARD_BACKGROUND } from "../constants/colors";
-import { shapeSelect$ } from "../events/shape-select.event";
+import { COLOR_BOARD_BACKGROUND } from "../constants/color.constants";
+import { nodeSelect$ } from "../events/node-select.event";
 import { pointerMove$ } from "../events/pointer-move.event";
-import { shapeDrag$ } from "../events/shape-drag.event";
+import { nodeDrag$ } from "../events/node-drag.event";
 import { viewportDrag$ } from "../events/viewport-drag.event";
 import { viewportZoom$ } from "../events/viewport-zoom.event";
-import { BoardContext } from "../context/context";
-import { shapeSize$ } from "../events/shape-size.event";
+import { SceneContext } from "./scene-context";
+import { nodeResize$ } from "../events/node-resize.event";
 import { keyDown$ } from "../events/keydown.event";
 import { nodeCreate$ } from "../events/node-create.event";
+import type { NodeType } from "../nodes/node-factory";
 
 export class Board {
-  readonly context: BoardContext;
+  readonly context = new SceneContext();
 
-  get state() {
-    return this.context.state;
+  get scene() {
+    return this.context.scene;
   }
 
-  get shapes() {
-    return this.context.shapesList;
+  get nodes() {
+    return this.context.nodeList;
   }
 
-  createNode(nodeType: 'rectangle' | 'ellipse'): void {
-    this.state.beingCreatedNode = nodeType;
+  createNode(nodeType: NodeType): void {
+    this.scene.beingCreatedNodeType = nodeType;
   }
 
   constructor() {
-    this.context = new BoardContext();
-
     keyDown$(this.context).subscribe();
     pointerMove$(this.context).subscribe();
     viewportDrag$(this.context).subscribe();
     viewportZoom$(this.context).subscribe();
-    shapeSelect$(this.context).subscribe();
-    shapeDrag$(this.context).subscribe();
-    shapeSize$(this.context).subscribe();
+    nodeSelect$(this.context).subscribe();
+    nodeDrag$(this.context).subscribe();
+    nodeResize$(this.context).subscribe();
     nodeCreate$(this.context).subscribe();
 
-    this.context.idbService.getState('boardState')
+    this.context.idbService.getState('scene')
       .then(state => {
-        Object.assign(this.context.state, state);
+        Object.assign(this.context.scene, state);
         this.draw();
         this.context.stateChanges$.next(true);
       })

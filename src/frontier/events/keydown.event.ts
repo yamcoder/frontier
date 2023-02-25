@@ -1,12 +1,13 @@
 import { fromEvent, map, tap } from "rxjs";
-import type { BoardContext } from "../context/context";
+import type { SceneContext } from "../core/scene-context";
+import { NodeType } from "../nodes/node-factory";
 
-export const keyDown$ = (context: BoardContext) => {
+export const keyDown$ = (context: SceneContext) => {
   const keyDown$ = fromEvent<KeyboardEvent>(document, 'keydown');
 
   return keyDown$.pipe(
     tap(event => {
-      if (context.state.selectedShapeId !== '') {
+      if (context.scene.selectedNodeId) {
 
         if (event.code === 'Escape') {
           context.unselectAll();
@@ -34,17 +35,17 @@ export const keyDown$ = (context: BoardContext) => {
 
         context.draw();
         context.stateChanges$.next(true);
-        context.idbService.setState(context.nodes.map(({ context, ...rest }) => rest), 'nodes');
+        context.idbService.setNodes(context.nodes);
       }
 
       if (event.code === 'KeyR') {
-        context.state.beingCreatedNode = 'rectangle';
+        context.scene.beingCreatedNodeType = NodeType.Rectangle;
         context.canvas.style.cursor = 'crosshair';
         context.stateChanges$.next(true);
       }
 
       if (event.code === 'KeyE') {
-        context.state.beingCreatedNode = 'ellipse';
+        context.scene.beingCreatedNodeType = NodeType.Ellipse;
         context.canvas.style.cursor = 'crosshair';
         context.stateChanges$.next(true);
       }
