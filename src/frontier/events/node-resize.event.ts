@@ -51,7 +51,7 @@ export const nodeResize$ = (context: SceneContext) => {
           deltaY: move.clientY - start.originalEvent.clientY,
         })),
         tap(move => {
-          context.scene.isResizing = true;
+          context.scene.isNodeResizing = true;
 
           switch (start.resizeControl) {
             case 'E': {
@@ -101,12 +101,12 @@ export const nodeResize$ = (context: SceneContext) => {
           }
 
           context.draw();
-          context.stateChanges$.next(true);
+          context.changeState();
         }),
         takeUntil(pointerUp$.pipe(
           tap(() => {
-            context.scene.isResizing = false;
-            context.stateChanges$.next(true);
+            context.scene.isNodeResizing = false;
+            context.changeState();
             context.idbService.setNodes(context.nodes);
           })
         ))

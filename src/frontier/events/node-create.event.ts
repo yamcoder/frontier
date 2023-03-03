@@ -10,7 +10,7 @@ export const nodeCreate$ = (context: SceneContext) => {
   const pointerUp$ = fromEvent<PointerEvent>(context.canvas, 'pointerup');
 
   return pointerDown$.pipe(
-    filter(() => context.scene.beingCreatedNodeType !== null),
+    filter(() => context.scene.creatableNodeType !== null),
     filter(start => start.button === POINTER_LEFT_BUTTON),
     tap(start => {
       context.canvas.setPointerCapture(start.pointerId);
@@ -19,7 +19,7 @@ export const nodeCreate$ = (context: SceneContext) => {
       const id = uuid();
 
       context.addNode({
-        type: context.scene.beingCreatedNodeType as any,
+        type: context.scene.creatableNodeType as any,
         id,
         x: context.scene.pointerX,
         y: context.scene.pointerY,
@@ -52,25 +52,25 @@ export const nodeCreate$ = (context: SceneContext) => {
           deltaY: move.clientY - start.originalEvent.clientY,
         })),
         tap(move => {
-          context.scene.isCreating = true;
+          context.scene.isNodeCreating = true;
           context.checkHovers();
           context.draw();
-          context.stateChanges$.next(true);
+          context.changeState();
         }),
         takeUntil(pointerUp$.pipe(
           tap(() => {
 
-            if (context.scene.isCreating === false) {
+            if (context.scene.isNodeCreating === false) {
               start.node.setX(start.node.x - 50);
               start.node.setY(start.node.y - 50);
             }
 
-            context.scene.isCreating = false;
-            context.scene.beingCreatedNodeType = null;
+            context.scene.isNodeCreating = false;
+            context.scene.creatableNodeType = null;
             context.canvas.style.cursor = 'default';
             context.checkHovers();
             context.draw();
-            context.stateChanges$.next(true);
+            context.changeState();
             context.idbService.setNodes(context.nodes);
           })
         ))

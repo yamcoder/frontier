@@ -21,10 +21,10 @@ export const viewportZoom$ = (context: SceneContext) => {
         newScale = newScale < 0.2 ? 0.2 : newScale;
         context.scene.scale = +newScale.toFixed(1);
       }
-      context.scene.viewportX = context.scene.pointerX - Math.round(context.scene.offsetX / newScale);
-      context.scene.viewportY = context.scene.pointerY - Math.round(context.scene.offsetY / newScale);
+      context.scene.setViewportX(context.scene.pointerX - Math.round(context.scene.offsetX / newScale));
+      context.scene.setViewportY(context.scene.pointerY - Math.round(context.scene.offsetY / newScale));
       context.draw();
-      context.stateChanges$.next(true);
+      context.changeState();
       context.idbService.setScene(context.scene);
     })
   )

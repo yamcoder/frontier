@@ -22,7 +22,7 @@ export class Board {
   }
 
   createNode(nodeType: NodeType): void {
-    this.scene.beingCreatedNodeType = nodeType;
+    this.scene.creatableNodeType = nodeType;
   }
 
   constructor() {
@@ -39,7 +39,7 @@ export class Board {
       .then(state => {
         Object.assign(this.context.scene, state);
         this.draw();
-        this.context.stateChanges$.next(true);
+        this.context.changeState();
       })
       .catch(console.error)
   }

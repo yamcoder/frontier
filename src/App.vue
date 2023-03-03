@@ -6,7 +6,7 @@ import { Board } from "./frontier";
 
 const canvasContainerRef = ref<HTMLElement>();
 const board = new Board();
-const createdNodeType = ref(board.scene.beingCreatedNodeType);
+const createdNodeType = ref(board.scene.creatableNodeType);
 const createdNodeOptions = ref([
   { type: 'RECTANGLE', label: 'Прямоугольник' },
   { type: 'ELLIPSE', label: 'Эллипс' },
@@ -25,7 +25,7 @@ onMounted(() => {
   board.context.stateChanges$.subscribe(() => {
     sceneContext.value.nodes = board.nodes;
     sceneContext.value.scene = board.scene;
-    createdNodeType.value = board.scene.beingCreatedNodeType;
+    createdNodeType.value = board.scene.creatableNodeType;
   });
 });
 </script>
@@ -54,10 +54,10 @@ onMounted(() => {
         Scale: {{ sceneContext.scene.scale }} <br />
         hoveredNodeId: {{ sceneContext.scene.hoveredNodeId }} <br />
         selectedNodeId: {{ sceneContext.scene.selectedNodeId }} <br />
-        beingCreatedNode: {{ sceneContext.scene.beingCreatedNodeType }} <br />
-        isCreating: {{ sceneContext.scene.isCreating }} <br />
-        isDragging: {{ sceneContext.scene.isDragging }} <br />
-        isResizing: {{ sceneContext.scene.isResizing }} <br />
+        beingCreatedNode: {{ sceneContext.scene.creatableNodeType }} <br />
+        isCreating: {{ sceneContext.scene.isNodeCreating }} <br />
+        isDragging: {{ sceneContext.scene.isNodeDragging }} <br />
+        isResizing: {{ sceneContext.scene.isNodeResizing }} <br />
         isHoverSelectedNodeArea: {{ sceneContext.scene.isHoverSelectedNodeArea }} <br />
         isHoverResizeControls: {{ sceneContext.scene.isHoverResizeControls }} <br />
         isHoverResizeControl: <pre>{{ JSON.stringify(sceneContext.scene.isHoverResizeControl, null, 2) }}</pre> <br />

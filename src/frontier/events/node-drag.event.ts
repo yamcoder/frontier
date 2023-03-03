@@ -47,17 +47,17 @@ export const nodeDrag$ = (context: SceneContext) => {
           deltaY: move.clientY - start.originalEvent.clientY,
         })),
         tap(move => {
-          context.scene.isDragging = true;
+          context.scene.isNodeDragging = true;
 
           start.draggableNode.node.setX(start.draggableNode.startX + Math.round(move.deltaX / context.scene.scale));
           start.draggableNode.node.setY(start.draggableNode.startY + Math.round(move.deltaY / context.scene.scale));
 
           context.draw();
-          context.stateChanges$.next(true);
+          context.changeState();
         }),
         takeUntil(pointerUp$.pipe(
           tap(() => {
-            context.scene.isDragging = false;
+            context.scene.isNodeDragging = false;
             context.idbService.setNodes(context.nodes);
           })
         ))

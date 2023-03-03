@@ -21,7 +21,7 @@ export const pointerMove$ = (context: SceneContext) => {
 
       context.checkHovers();
       context.draw();
-      context.stateChanges$.next(true);
+      context.changeState();
     })
   );
 }

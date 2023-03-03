@@ -10,20 +10,19 @@ export class Scene {
   offsetY = 0;
   selectedNodeId: string | null = null;
   hoveredNodeId: string | null = null;
-
   isViewportDragging = false;
-  isDragging = false;
-  isCreating = false;
-  isResizing = false;
-
+  isNodeDragging = false;
+  isNodeCreating = false;
+  isNodeResizing = false;
   isHoverSelectedNodeArea = false;
+  creatableNodeType: NodeType | null = null;
 
   /*
     N - North
     E - East
     S - South
     W - West
-  */
+    */
   isHoverResizeControl = {
     NW: false,
     NE: false,
@@ -34,8 +33,6 @@ export class Scene {
     S: false,
     W: false,
   };
-
-  beingCreatedNodeType: NodeType | null = null;
 
   get isHoverResizeControls(): boolean {
     return (
@@ -49,4 +46,12 @@ export class Scene {
       this.isHoverResizeControl.W
     )
   };
+
+  setScale(value: number) { this.scale = value; }
+  setViewportX(value: number) { this.viewportX = value; }
+  setViewportY(value: number) { this.viewportY = value; }
+  setPointerX(value: number) { this.pointerX = value; }
+  setPointerY(value: number) { this.pointerY = value; }
+  setOffsetX(value: number) { this.offsetX = value; }
+  setOffsetY(value: number) { this.offsetY = value; }
 }

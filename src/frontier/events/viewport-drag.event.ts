@@ -40,10 +40,10 @@ export const viewportDrag$ = (context: SceneContext) => {
           })
         }),
         tap(move => {
-          context.scene.viewportX = move.viewportX;
-          context.scene.viewportY = move.viewportY;
+          context.scene.setViewportX(move.viewportX);
+          context.scene.setViewportY(move.viewportY);
           context.draw();
-          context.stateChanges$.next(true);
+          context.changeState();
         }),
         takeUntil(pointerUp$.pipe(
           tap(() => {

@@ -34,20 +34,20 @@ export const keyDown$ = (context: SceneContext) => {
         }
 
         context.draw();
-        context.stateChanges$.next(true);
+        context.changeState();
         context.idbService.setNodes(context.nodes);
       }
 
       if (event.code === 'KeyR') {
-        context.scene.beingCreatedNodeType = NodeType.Rectangle;
+        context.scene.creatableNodeType = NodeType.Rectangle;
         context.canvas.style.cursor = 'crosshair';
-        context.stateChanges$.next(true);
+        context.changeState();
       }
 
       if (event.code === 'KeyE') {
-        context.scene.beingCreatedNodeType = NodeType.Ellipse;
+        context.scene.creatableNodeType = NodeType.Ellipse;
         context.canvas.style.cursor = 'crosshair';
-        context.stateChanges$.next(true);
+        context.changeState();
       }
     })
   );

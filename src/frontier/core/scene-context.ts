@@ -58,6 +58,10 @@ export class SceneContext {
       })
   }
 
+  changeState() {
+    this.stateChanges$.next(true);
+  }
+
   get nodeList() {
     return this.nodes.slice().reverse().map(({ ctx, scene, ...rest }) => rest);
   }
@@ -157,7 +161,7 @@ export class SceneContext {
       this.canvas.style.cursor = 'ns-resize';
     } else if (this.scene.isHoverResizeControl.E || this.scene.isHoverResizeControl.W) {
       this.canvas.style.cursor = 'ew-resize';
-    } else if (this.scene.beingCreatedNodeType) {
+    } else if (this.scene.creatableNodeType) {
       this.canvas.style.cursor = 'crosshair';
     } else if (this.scene.isViewportDragging) {
       this.canvas.style.cursor = 'grabbing';

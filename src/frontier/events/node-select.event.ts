@@ -18,7 +18,7 @@ const selectHandler = (context: SceneContext) => {
 
     context.checkHovers();
     context.draw();
-    context.stateChanges$.next(true);
+    context.changeState();
     context.idbService.setScene(context.scene);
     context.idbService.setNodes(context.nodes);
   }
@@ -38,7 +38,7 @@ export const nodeSelect$ = (context: SceneContext) => {
     switchMap(event =>
       pointerUp$.pipe(
         tap(event => {
-          if (!(context.scene.isDragging || context.scene.isResizing)) {
+          if (!(context.scene.isNodeDragging || context.scene.isNodeResizing)) {
             selectHandler(context);
           }
         })
