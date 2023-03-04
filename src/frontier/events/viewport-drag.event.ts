@@ -11,7 +11,7 @@ export const viewportDrag$ = (context: SceneContext) => {
     filter(start => start.button === POINTER_MIDDLE_BUTTON),
     tap(start => {
       context.canvas.setPointerCapture(start.pointerId);
-      context.scene.isViewportDragging = true;
+      context.scene.setIsViewportDragging(true);
       context.draw();
     }),
     map(start => ({
@@ -47,7 +47,7 @@ export const viewportDrag$ = (context: SceneContext) => {
         }),
         takeUntil(pointerUp$.pipe(
           tap(() => {
-            context.scene.isViewportDragging = false;
+            context.scene.setIsViewportDragging(false);
             context.idbService.setScene(context.scene);
           })))
       )),

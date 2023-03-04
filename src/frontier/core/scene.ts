@@ -22,7 +22,7 @@ export class Scene {
     E - East
     S - South
     W - West
-    */
+  */
   isHoverResizeControl = {
     NW: false,
     NE: false,
@@ -54,4 +54,13 @@ export class Scene {
   setPointerY(value: number) { this.pointerY = value; }
   setOffsetX(value: number) { this.offsetX = value; }
   setOffsetY(value: number) { this.offsetY = value; }
+  setSelectedNodeId(value: string | null) { this.selectedNodeId = value; }
+  setHoveredNodeId(value: string | null) { this.hoveredNodeId = value; }
+  setIsViewportDragging(value: boolean) { this.isViewportDragging = value; }
+  setIsNodeDragging(value: boolean) { this.isNodeDragging = value; }
+  setIsNodeCreating(value: boolean) { this.isNodeCreating = value; }
+  setIsNodeResizing(value: boolean) { this.isNodeResizing = value; }
+  setIsHoverSelectedNodeArea(value: boolean) { this.isHoverSelectedNodeArea = value; }
+  setCreatableNodeType(value: NodeType | null) { this.creatableNodeType = value; }
+  setIsHoverResizeControl(control: 'NW' | 'NE' | 'SE' | 'SW' | 'N' | 'E' | 'S' | 'W', value: boolean) { this.isHoverResizeControl[control] = value; }
 }

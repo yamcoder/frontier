@@ -19,7 +19,7 @@ export const nodeCreate$ = (context: SceneContext) => {
       const id = uuid();
 
       context.addNode({
-        type: context.scene.creatableNodeType as any,
+        type: context.scene.creatableNodeType!,
         id,
         x: context.scene.pointerX,
         y: context.scene.pointerY,
@@ -29,7 +29,7 @@ export const nodeCreate$ = (context: SceneContext) => {
       });
 
       const node = context.nodes.find(node => node.id === id)!;
-      context.scene.selectedNodeId = id;
+      context.scene.setSelectedNodeId(id);
       node.setIsSelected(true);
       context.checkHovers();
 
@@ -52,7 +52,7 @@ export const nodeCreate$ = (context: SceneContext) => {
           deltaY: move.clientY - start.originalEvent.clientY,
         })),
         tap(move => {
-          context.scene.isNodeCreating = true;
+          context.scene.setIsNodeCreating(true);
           context.checkHovers();
           context.draw();
           context.changeState();
@@ -65,8 +65,8 @@ export const nodeCreate$ = (context: SceneContext) => {
               start.node.setY(start.node.y - 50);
             }
 
-            context.scene.isNodeCreating = false;
-            context.scene.creatableNodeType = null;
+            context.scene.setIsNodeCreating(false);
+            context.scene.setCreatableNodeType(null);
             context.canvas.style.cursor = 'default';
             context.checkHovers();
             context.draw();

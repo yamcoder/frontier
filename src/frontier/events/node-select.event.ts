@@ -4,7 +4,7 @@ import type { SceneContext } from "../core/scene-context";
 
 const selectHandler = (context: SceneContext) => {
   if (!context.scene.isHoverResizeControls) {
-    let selectedNodeId: string = '';
+    let selectedNodeId: string | null = null;
 
     context.nodes.forEach(element => {
       if (element.id === context.scene.hoveredNodeId) {
@@ -14,7 +14,7 @@ const selectHandler = (context: SceneContext) => {
         element.setIsSelected(false);
       }
     });
-    context.scene.selectedNodeId = selectedNodeId;
+    context.scene.setSelectedNodeId(selectedNodeId);
 
     context.checkHovers();
     context.draw();

@@ -14,10 +14,10 @@ export const pointerMove$ = (context: SceneContext) => {
       offsetY: move.clientY - (move.target as HTMLCanvasElement).offsetTop,
     })),
     tap(event => {
-      context.scene.offsetX = Math.round(event.offsetX);
-      context.scene.offsetY = Math.round(event.offsetY);
-      context.scene.pointerX = Math.round(context.scene.viewportX + (event.offsetX / context.scene.scale));
-      context.scene.pointerY = Math.round(context.scene.viewportY + (event.offsetY / context.scene.scale));
+      context.scene.setOffsetX(Math.round(event.offsetX));
+      context.scene.setOffsetY(Math.round(event.offsetY));
+      context.scene.setPointerX(Math.round(context.scene.viewportX + (event.offsetX / context.scene.scale)));
+      context.scene.setPointerY(Math.round(context.scene.viewportY + (event.offsetY / context.scene.scale)));
 
       context.checkHovers();
       context.draw();

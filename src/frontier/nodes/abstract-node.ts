@@ -69,44 +69,25 @@ export abstract class AbstractNode implements Node {
       (this.offsetY > this.viewTopY + AREA_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - AREA_CORNER_HALF_SIDE);
   };
 
-  get checkHoverResizeControlNW(): boolean {
-    return (this.offsetX >= this.viewLeftX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + AREA_CORNER_HALF_SIDE) &&
-      (this.offsetY >= this.viewTopY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + AREA_CORNER_HALF_SIDE);
-  }
-
-  get checkHoverResizeControlNE(): boolean {
-    return (this.offsetX >= this.viewRightX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + AREA_CORNER_HALF_SIDE) &&
-      (this.offsetY >= this.viewTopY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + AREA_CORNER_HALF_SIDE);
-  }
-
-  get checkHoverResizeControlSW(): boolean {
-    return (this.offsetX >= this.viewLeftX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + AREA_CORNER_HALF_SIDE) &&
-      (this.offsetY >= this.viewBottomY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + AREA_CORNER_HALF_SIDE);
-  }
-
-  get checkHoverResizeControlSE(): boolean {
-    return (this.offsetX >= this.viewRightX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + AREA_CORNER_HALF_SIDE) &&
-      (this.offsetY >= this.viewBottomY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + AREA_CORNER_HALF_SIDE);
-  }
-
-  get checkHoverResizeControlN(): boolean {
-    return (this.offsetX > this.viewLeftX + AREA_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - AREA_CORNER_HALF_SIDE) &&
-      (this.offsetY >= this.viewTopY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + AREA_CORNER_HALF_SIDE);
-  }
-
-  get checkHoverResizeControlE(): boolean {
-    return (this.offsetX >= this.viewRightX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + AREA_CORNER_HALF_SIDE) &&
-      (this.offsetY > this.viewTopY + AREA_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - AREA_CORNER_HALF_SIDE);
-  }
-
-  get checkHoverResizeControlS(): boolean {
-    return (this.offsetX > this.viewLeftX + AREA_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - AREA_CORNER_HALF_SIDE) &&
-      (this.offsetY >= this.viewBottomY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + AREA_CORNER_HALF_SIDE);
-  }
-
-  get checkHoverResizeControlW(): boolean {
-    return (this.offsetX >= this.viewLeftX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + AREA_CORNER_HALF_SIDE) &&
-      (this.offsetY > this.viewTopY + AREA_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - AREA_CORNER_HALF_SIDE);
+  get checkHoverResizeControl() {
+    return {
+      NW: (this.offsetX >= this.viewLeftX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + AREA_CORNER_HALF_SIDE) &&
+        (this.offsetY >= this.viewTopY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + AREA_CORNER_HALF_SIDE),
+      NE: (this.offsetX >= this.viewRightX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + AREA_CORNER_HALF_SIDE) &&
+        (this.offsetY >= this.viewTopY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + AREA_CORNER_HALF_SIDE),
+      SW: (this.offsetX >= this.viewLeftX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + AREA_CORNER_HALF_SIDE) &&
+        (this.offsetY >= this.viewBottomY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + AREA_CORNER_HALF_SIDE),
+      SE: (this.offsetX >= this.viewRightX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + AREA_CORNER_HALF_SIDE) &&
+        (this.offsetY >= this.viewBottomY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + AREA_CORNER_HALF_SIDE),
+      N: (this.offsetX > this.viewLeftX + AREA_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - AREA_CORNER_HALF_SIDE) &&
+        (this.offsetY >= this.viewTopY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + AREA_CORNER_HALF_SIDE),
+      E: (this.offsetX >= this.viewRightX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + AREA_CORNER_HALF_SIDE) &&
+        (this.offsetY > this.viewTopY + AREA_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - AREA_CORNER_HALF_SIDE),
+      S: (this.offsetX > this.viewLeftX + AREA_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - AREA_CORNER_HALF_SIDE) &&
+        (this.offsetY >= this.viewBottomY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + AREA_CORNER_HALF_SIDE),
+      W: (this.offsetX >= this.viewLeftX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + AREA_CORNER_HALF_SIDE) &&
+        (this.offsetY > this.viewTopY + AREA_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - AREA_CORNER_HALF_SIDE)
+    }
   }
 
   checkHover(): void {
@@ -114,15 +95,15 @@ export abstract class AbstractNode implements Node {
   }
 
   checkNodeControlHovers(): void {
-    this.scene.isHoverSelectedNodeArea = this.checkHoverSelectedNodeArea;
-    this.scene.isHoverResizeControl.NW = this.checkHoverResizeControlNW;
-    this.scene.isHoverResizeControl.NE = this.checkHoverResizeControlNE;
-    this.scene.isHoverResizeControl.SW = this.checkHoverResizeControlSW;
-    this.scene.isHoverResizeControl.SE = this.checkHoverResizeControlSE;
-    this.scene.isHoverResizeControl.N = this.checkHoverResizeControlN;
-    this.scene.isHoverResizeControl.E = this.checkHoverResizeControlE;
-    this.scene.isHoverResizeControl.S = this.checkHoverResizeControlS;
-    this.scene.isHoverResizeControl.W = this.checkHoverResizeControlW;
+    this.scene.setIsHoverSelectedNodeArea(this.checkHoverSelectedNodeArea);
+    this.scene.setIsHoverResizeControl('NW', this.checkHoverResizeControl.NW);
+    this.scene.setIsHoverResizeControl('NE', this.checkHoverResizeControl.NE);
+    this.scene.setIsHoverResizeControl('SW', this.checkHoverResizeControl.SW);
+    this.scene.setIsHoverResizeControl('SE', this.checkHoverResizeControl.SE);
+    this.scene.setIsHoverResizeControl('N', this.checkHoverResizeControl.N);
+    this.scene.setIsHoverResizeControl('E', this.checkHoverResizeControl.E);
+    this.scene.setIsHoverResizeControl('S', this.checkHoverResizeControl.S);
+    this.scene.setIsHoverResizeControl('W', this.checkHoverResizeControl.W);
   }
 
   constructor(ctx: CanvasRenderingContext2D, scene: Scene, options: {

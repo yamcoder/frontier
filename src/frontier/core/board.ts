@@ -22,7 +22,7 @@ export class Board {
   }
 
   createNode(nodeType: NodeType): void {
-    this.scene.creatableNodeType = nodeType;
+    this.scene.setCreatableNodeType(nodeType);
   }
 
   constructor() {

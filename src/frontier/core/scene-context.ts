@@ -81,7 +81,7 @@ export class SceneContext {
   deleteSelected(): void {
     const selectedIdx = this.nodes.findIndex(node => node.id === this.scene.selectedNodeId);
     this.nodes.splice(selectedIdx, 1);
-    this.scene.selectedNodeId = null;
+    this.scene.setSelectedNodeId(null);
     this.checkHovers();
     this.canvas.style.cursor = 'default';
   }
@@ -89,7 +89,7 @@ export class SceneContext {
   unselectAll(): void {
     const selectedNode = this.nodes.find(el => el.id === this.scene.selectedNodeId);
     selectedNode?.setIsSelected(false);
-    this.scene.selectedNodeId = null;
+    this.scene.setSelectedNodeId(null);
     this.checkHovers();
     this.canvas.style.cursor = 'default';
   }
@@ -176,7 +176,7 @@ export class SceneContext {
     });
 
     if (this.nodes.length === 0) {
-      this.scene.hoveredNodeId = null;
+      this.scene.setHoveredNodeId(null);
     }
 
     const selectedNode = this.nodes.find(node => node.isSelected);
@@ -184,26 +184,26 @@ export class SceneContext {
     if (selectedNode) {
       selectedNode.checkNodeControlHovers();
     } else {
-      this.scene.isHoverSelectedNodeArea = false;
-      this.scene.isHoverResizeControl.NW = false;
-      this.scene.isHoverResizeControl.NE = false;
-      this.scene.isHoverResizeControl.SE = false;
-      this.scene.isHoverResizeControl.SW = false;
-      this.scene.isHoverResizeControl.N = false;
-      this.scene.isHoverResizeControl.E = false;
-      this.scene.isHoverResizeControl.S = false;
-      this.scene.isHoverResizeControl.W = false;
+      this.scene.setIsHoverSelectedNodeArea(false);
+      this.scene.setIsHoverResizeControl('NW', false);
+      this.scene.setIsHoverResizeControl('NE', false);
+      this.scene.setIsHoverResizeControl('SE', false);
+      this.scene.setIsHoverResizeControl('SW', false);
+      this.scene.setIsHoverResizeControl('N', false);
+      this.scene.setIsHoverResizeControl('E', false);
+      this.scene.setIsHoverResizeControl('S', false);
+      this.scene.setIsHoverResizeControl('W', false);
     }
 
     for (let i = this.nodes.length - 1; i >= 0; i--) {
       const element = this.nodes[i];
 
       if (element.isHovered) {
-        this.scene.hoveredNodeId = element.id;
+        this.scene.setHoveredNodeId(element.id);
         break;
       }
 
-      this.scene.hoveredNodeId = null;
+      this.scene.setHoveredNodeId(null);
     }
   }
 
