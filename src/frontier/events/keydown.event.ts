@@ -40,13 +40,13 @@ export const keyDown$ = (context: SceneContext) => {
 
       if (event.code === 'KeyR') {
         context.scene.setCreatableNodeType(NodeType.Rectangle);
-        context.canvas.style.cursor = 'crosshair';
+        context.cursorStyle('crosshair');
         context.changeState();
       }
 
       if (event.code === 'KeyE') {
         context.scene.setCreatableNodeType(NodeType.Ellipse);
-        context.canvas.style.cursor = 'crosshair';
+        context.cursorStyle('crosshair');
         context.changeState();
       }
     })

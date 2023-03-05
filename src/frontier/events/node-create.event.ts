@@ -67,7 +67,7 @@ export const nodeCreate$ = (context: SceneContext) => {
 
             context.scene.setIsNodeCreating(false);
             context.scene.setCreatableNodeType(null);
-            context.canvas.style.cursor = 'default';
+            context.cursorStyle('default');
             context.checkHovers();
             context.draw();
             context.changeState();

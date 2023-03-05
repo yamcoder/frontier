@@ -54,10 +54,10 @@ onMounted(() => {
         Scale: {{ sceneContext.scene.scale }} <br />
         hoveredNodeId: {{ sceneContext.scene.hoveredNodeId }} <br />
         selectedNodeId: {{ sceneContext.scene.selectedNodeId }} <br />
-        beingCreatedNode: {{ sceneContext.scene.creatableNodeType }} <br />
-        isCreating: {{ sceneContext.scene.isNodeCreating }} <br />
-        isDragging: {{ sceneContext.scene.isNodeDragging }} <br />
-        isResizing: {{ sceneContext.scene.isNodeResizing }} <br />
+        creatableNodeType: {{ sceneContext.scene.creatableNodeType }} <br />
+        isNodeCreating: {{ sceneContext.scene.isNodeCreating }} <br />
+        isNodeDragging: {{ sceneContext.scene.isNodeDragging }} <br />
+        isNodeResizing: {{ sceneContext.scene.isNodeResizing }} <br />
         isHoverSelectedNodeArea: {{ sceneContext.scene.isHoverSelectedNodeArea }} <br />
         isHoverResizeControls: {{ sceneContext.scene.isHoverResizeControls }} <br />
         isHoverResizeControl: <pre>{{ JSON.stringify(sceneContext.scene.isHoverResizeControl, null, 2) }}</pre> <br />

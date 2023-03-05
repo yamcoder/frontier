@@ -83,7 +83,7 @@ export class SceneContext {
     this.nodes.splice(selectedIdx, 1);
     this.scene.setSelectedNodeId(null);
     this.checkHovers();
-    this.canvas.style.cursor = 'default';
+    this.cursorStyle('default');
   }
 
   unselectAll(): void {
@@ -91,7 +91,7 @@ export class SceneContext {
     selectedNode?.setIsSelected(false);
     this.scene.setSelectedNodeId(null);
     this.checkHovers();
-    this.canvas.style.cursor = 'default';
+    this.cursorStyle('default');
   }
 
   moveSelectedToFront(): void {
@@ -154,20 +154,24 @@ export class SceneContext {
 
   checkCursorStyle(): void {
     if (this.scene.isHoverResizeControl.NW || this.scene.isHoverResizeControl.SE) {
-      this.canvas.style.cursor = 'nwse-resize';
+      this.cursorStyle('nwse-resize');
     } else if (this.scene.isHoverResizeControl.NE || this.scene.isHoverResizeControl.SW) {
-      this.canvas.style.cursor = 'nesw-resize';
+      this.cursorStyle('nesw-resize');
     } else if (this.scene.isHoverResizeControl.N || this.scene.isHoverResizeControl.S) {
-      this.canvas.style.cursor = 'ns-resize';
+      this.cursorStyle('ns-resize');
     } else if (this.scene.isHoverResizeControl.E || this.scene.isHoverResizeControl.W) {
-      this.canvas.style.cursor = 'ew-resize';
+      this.cursorStyle('ew-resize');
     } else if (this.scene.creatableNodeType) {
-      this.canvas.style.cursor = 'crosshair';
+      this.cursorStyle('crosshair');
     } else if (this.scene.isViewportDragging) {
-      this.canvas.style.cursor = 'grabbing';
+      this.cursorStyle('grabbing');
     } else {
-      this.canvas.style.cursor = 'default';
+      this.cursorStyle('default');
     }
+  }
+
+  cursorStyle(style: string) {
+    this.canvas.style.cursor = style;
   }
 
   checkHovers(): void {
