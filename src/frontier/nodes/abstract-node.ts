@@ -1,4 +1,4 @@
-import { AREA_CORNER_HALF_SIDE } from '../constants/size.constants';
+import { RESIZE_CONTROL_CORNER_HALF_SIDE } from '../constants/size.constants';
 import type { Scene } from '../core/scene';
 
 export interface Node {
@@ -65,28 +65,28 @@ export abstract class AbstractNode implements Node {
   abstract get checkHoverNode(): boolean;
 
   get checkHoverSelectedNodeArea(): boolean {
-    return (this.offsetX > this.viewLeftX + AREA_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - AREA_CORNER_HALF_SIDE) &&
-      (this.offsetY > this.viewTopY + AREA_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - AREA_CORNER_HALF_SIDE);
+    return (this.offsetX > this.viewLeftX + RESIZE_CONTROL_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - RESIZE_CONTROL_CORNER_HALF_SIDE) &&
+      (this.offsetY > this.viewTopY + RESIZE_CONTROL_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - RESIZE_CONTROL_CORNER_HALF_SIDE);
   };
 
   get checkHoverResizeControl() {
     return {
-      NW: (this.offsetX >= this.viewLeftX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + AREA_CORNER_HALF_SIDE) &&
-        (this.offsetY >= this.viewTopY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + AREA_CORNER_HALF_SIDE),
-      NE: (this.offsetX >= this.viewRightX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + AREA_CORNER_HALF_SIDE) &&
-        (this.offsetY >= this.viewTopY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + AREA_CORNER_HALF_SIDE),
-      SW: (this.offsetX >= this.viewLeftX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + AREA_CORNER_HALF_SIDE) &&
-        (this.offsetY >= this.viewBottomY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + AREA_CORNER_HALF_SIDE),
-      SE: (this.offsetX >= this.viewRightX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + AREA_CORNER_HALF_SIDE) &&
-        (this.offsetY >= this.viewBottomY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + AREA_CORNER_HALF_SIDE),
-      N: (this.offsetX > this.viewLeftX + AREA_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - AREA_CORNER_HALF_SIDE) &&
-        (this.offsetY >= this.viewTopY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + AREA_CORNER_HALF_SIDE),
-      E: (this.offsetX >= this.viewRightX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + AREA_CORNER_HALF_SIDE) &&
-        (this.offsetY > this.viewTopY + AREA_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - AREA_CORNER_HALF_SIDE),
-      S: (this.offsetX > this.viewLeftX + AREA_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - AREA_CORNER_HALF_SIDE) &&
-        (this.offsetY >= this.viewBottomY - AREA_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + AREA_CORNER_HALF_SIDE),
-      W: (this.offsetX >= this.viewLeftX - AREA_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + AREA_CORNER_HALF_SIDE) &&
-        (this.offsetY > this.viewTopY + AREA_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - AREA_CORNER_HALF_SIDE)
+      NW: (this.offsetX >= this.viewLeftX - RESIZE_CONTROL_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + RESIZE_CONTROL_CORNER_HALF_SIDE) &&
+        (this.offsetY >= this.viewTopY - RESIZE_CONTROL_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + RESIZE_CONTROL_CORNER_HALF_SIDE),
+      NE: (this.offsetX >= this.viewRightX - RESIZE_CONTROL_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + RESIZE_CONTROL_CORNER_HALF_SIDE) &&
+        (this.offsetY >= this.viewTopY - RESIZE_CONTROL_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + RESIZE_CONTROL_CORNER_HALF_SIDE),
+      SW: (this.offsetX >= this.viewLeftX - RESIZE_CONTROL_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + RESIZE_CONTROL_CORNER_HALF_SIDE) &&
+        (this.offsetY >= this.viewBottomY - RESIZE_CONTROL_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + RESIZE_CONTROL_CORNER_HALF_SIDE),
+      SE: (this.offsetX >= this.viewRightX - RESIZE_CONTROL_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + RESIZE_CONTROL_CORNER_HALF_SIDE) &&
+        (this.offsetY >= this.viewBottomY - RESIZE_CONTROL_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + RESIZE_CONTROL_CORNER_HALF_SIDE),
+      N: (this.offsetX > this.viewLeftX + RESIZE_CONTROL_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - RESIZE_CONTROL_CORNER_HALF_SIDE) &&
+        (this.offsetY >= this.viewTopY - RESIZE_CONTROL_CORNER_HALF_SIDE && this.offsetY <= this.viewTopY + RESIZE_CONTROL_CORNER_HALF_SIDE),
+      E: (this.offsetX >= this.viewRightX - RESIZE_CONTROL_CORNER_HALF_SIDE && this.offsetX <= this.viewRightX + RESIZE_CONTROL_CORNER_HALF_SIDE) &&
+        (this.offsetY > this.viewTopY + RESIZE_CONTROL_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - RESIZE_CONTROL_CORNER_HALF_SIDE),
+      S: (this.offsetX > this.viewLeftX + RESIZE_CONTROL_CORNER_HALF_SIDE && this.offsetX < this.viewRightX - RESIZE_CONTROL_CORNER_HALF_SIDE) &&
+        (this.offsetY >= this.viewBottomY - RESIZE_CONTROL_CORNER_HALF_SIDE && this.offsetY <= this.viewBottomY + RESIZE_CONTROL_CORNER_HALF_SIDE),
+      W: (this.offsetX >= this.viewLeftX - RESIZE_CONTROL_CORNER_HALF_SIDE && this.offsetX <= this.viewLeftX + RESIZE_CONTROL_CORNER_HALF_SIDE) &&
+        (this.offsetY > this.viewTopY + RESIZE_CONTROL_CORNER_HALF_SIDE && this.offsetY < this.viewBottomY - RESIZE_CONTROL_CORNER_HALF_SIDE)
     }
   }
 
