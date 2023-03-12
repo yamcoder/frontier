@@ -1,8 +1,8 @@
 import { AbstractNode } from "../abstract-node";
-import { COLOR_BRAND } from "../../constants/color.constants";
-import { drawSelected } from "@/frontier/nodes/draw-fns/draw-selected";
 import type { RectangleOptions } from "../node-factory";
 import type { Scene } from "@/frontier/core/scene";
+import { COLOR_BRAND } from "@/frontier/constants/color.constants";
+import { drawSelected } from "../draw-fns/draw-selected";
 
 export class Rectangle extends AbstractNode {
   constructor({ ctx, scene, options }: {

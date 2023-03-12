@@ -1,5 +1,5 @@
-import { RESIZE_CONTROL_CORNER_HALF_SIDE } from '../constants/size.constants';
-import type { Scene } from '../core/scene';
+import { RESIZE_CONTROL_CORNER_HALF_SIDE } from "@/frontier/constants/size.constants";
+import type { Scene } from "../scene";
 
 export interface Node {
   ctx: CanvasRenderingContext2D;

@@ -1,5 +1,5 @@
-import { COLOR_BOARD_BACKGROUND, COLOR_BRAND } from "../../constants/color.constants";
-import { RESIZE_CONTROL_CORNER_HALF_SIDE, RESIZE_CONTROL_CORNER_SIDE, RESIZE_CONTROL_THICKNESS } from "../../constants/size.constants";
+import { COLOR_BOARD_BACKGROUND, COLOR_BRAND } from "@/frontier/constants/color.constants";
+import { RESIZE_CONTROL_THICKNESS, RESIZE_CONTROL_CORNER_HALF_SIDE, RESIZE_CONTROL_CORNER_SIDE } from "@/frontier/constants/size.constants";
 import type { AbstractNode } from "../abstract-node";
 
 export const drawSelected = (nodeInstance: AbstractNode) => {

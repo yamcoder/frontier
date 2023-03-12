@@ -1,7 +1,7 @@
 import type { Node } from "./abstract-node";
 import { Rectangle } from "./shapes/rectangle";
 import { Ellipse } from "./shapes/ellipse";
-import type { Scene } from '../core/scene';
+import type { Scene } from "../scene";
 
 export const enum NodeType {
   Rectangle = 'RECTANGLE',

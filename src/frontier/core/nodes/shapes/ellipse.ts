@@ -1,8 +1,8 @@
 import { AbstractNode } from "../abstract-node";
-import { COLOR_BRAND } from "../../constants/color.constants";
 import type { EllipseOptions } from "../node-factory";
-import { drawSelected } from "@/frontier/nodes/draw-fns/draw-selected";
 import type { Scene } from "@/frontier/core/scene";
+import { COLOR_BRAND } from "@/frontier/constants/color.constants";
+import { drawSelected } from "../draw-fns/draw-selected";
 
 export class Ellipse extends AbstractNode {
   constructor({ ctx, scene, options }: {
