@@ -4,6 +4,8 @@ import SelectButton, { type SelectButtonChangeEvent } from 'primevue/selectbutto
 
 import { Board } from "./frontier";
 
+const appVersion = import.meta.env.APP_VERSION;
+
 const canvasContainerRef = ref<HTMLElement>();
 const board = new Board();
 const createdNodeType = ref(board.scene.creatableNodeType);
@@ -33,6 +35,7 @@ onMounted(() => {
 <template>
   <div class="container">
     <header class="header">
+      <span class="header__version">version: {{ appVersion }}</span>
       <span class="header__title"></span>
       <div class="header__actions">
         <SelectButton
@@ -86,6 +89,12 @@ onMounted(() => {
 .header {
   display: flex;
   align-items: center;
+}
+
+.header__version {
+  flex: 1;
+
+  font-size: 1.5rem;
 }
 
 .header__title {
