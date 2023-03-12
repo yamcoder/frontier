@@ -8,7 +8,7 @@ import { SceneContext } from "./scene-context";
 import { nodeResize$ } from "../events/node-resize.event";
 import { keyDown$ } from "../events/keydown.event";
 import { nodeCreate$ } from "../events/node-create.event";
-import type { NodeType } from "../nodes/node-factory";
+import type { NodeType } from "./nodes/node-factory";
 
 export class Board {
   readonly context = new SceneContext();

@@ -1,5 +1,5 @@
 import { openDB } from "idb";
-import type { Node } from "../nodes/abstract-node";
+import type { Node } from "../core/nodes/abstract-node";
 import type { Scene } from './../core/scene';
 
 export class IDBService {

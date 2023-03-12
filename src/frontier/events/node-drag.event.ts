@@ -1,7 +1,7 @@
 import { fromEvent, filter, tap, map, switchMap, takeUntil } from "rxjs";
 import { POINTER_LEFT_BUTTON } from "../constants/event.constants";
 import type { SceneContext } from "../core/scene-context";
-import type { Node } from "../nodes/abstract-node";
+import type { Node } from "../core/nodes/abstract-node";
 
 export const nodeDrag$ = (context: SceneContext) => {
   const pointerDown$ = fromEvent<PointerEvent>(context.canvas, 'pointerdown');

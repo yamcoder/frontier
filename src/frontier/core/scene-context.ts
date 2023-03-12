@@ -1,6 +1,6 @@
-import { NodeFactory, NodeType, type NodeOptions } from "../nodes/node-factory";
+import { NodeFactory, NodeType, type NodeOptions } from "./nodes/node-factory";
 import { Scene } from './scene';
-import type { Node } from "../nodes/abstract-node";
+import type { Node } from "./nodes/abstract-node";
 import { IDBService } from "../services/idb.service";
 import { Subject } from "rxjs";
 import { v4 as uuid } from 'uuid';

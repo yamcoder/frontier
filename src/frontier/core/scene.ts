@@ -1,4 +1,4 @@
-import type { NodeType } from "../nodes/node-factory";
+import type { NodeType } from "./nodes/node-factory";
 
 export class Scene {
   scale = 1;

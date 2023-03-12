@@ -1,6 +1,6 @@
 import { fromEvent, map, tap } from "rxjs";
 import type { SceneContext } from "../core/scene-context";
-import { NodeType } from "../nodes/node-factory";
+import { NodeType } from "../core/nodes/node-factory";
 
 export const keyDown$ = (context: SceneContext) => {
   const keyDown$ = fromEvent<KeyboardEvent>(document, 'keydown');
