@@ -38,7 +38,7 @@ export class Board {
     this.context.idbService.getState('scene')
       .then(state => {
         Object.assign(this.context.scene, state);
-        this.draw();
+        this.context.draw();
         this.context.changeState();
       })
       .catch(console.error)
@@ -49,21 +49,20 @@ export class Board {
     this.context.canvas.style.backgroundColor = COLOR_BOARD_BACKGROUND;
     this.context.canvas.width = element.clientWidth;
     this.context.canvas.height = element.clientHeight;
+
     this.observeResize(element);
     element.append(this.context.canvas);
-    this.draw();
+
+    this.context.draw();
   }
 
   private observeResize(element: HTMLElement): void {
     const resizer = new ResizeObserver(([entry]) => {
       this.context.canvas.width = entry.contentRect.width;
       this.context.canvas.height = entry.contentRect.height;
-      this.draw();
+      this.context.draw();
     });
-    resizer.observe(element);
-  }
 
-  private draw(): void {
-    this.context.draw();
+    resizer.observe(element);
   }
 }
