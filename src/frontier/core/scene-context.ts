@@ -6,19 +6,18 @@ import { Subject } from "rxjs";
 import { v4 as uuid } from 'uuid';
 
 export class SceneContext {
-  #nodeFactory: NodeFactory;
-
   canvas = document.createElement('canvas');
   ctx = this.canvas.getContext('2d')!;
-  scene = new Scene();
-  stateChanges$ = new Subject<true>();
-  idbService = new IDBService();
 
+  idbService = new IDBService();
+  stateChanges$ = new Subject<true>();
+
+  scene = new Scene();
   nodes: Node[] = [];
 
-  constructor() {
-    this.#nodeFactory = new NodeFactory(this.scene, this.ctx);
+  private nodeFactory = new NodeFactory(this.scene, this.ctx);
 
+  constructor() {
     this.idbService
       .getState("nodes")
       .then(nodes => {
@@ -74,7 +73,7 @@ export class SceneContext {
   }
 
   addNode(options: NodeOptions): void {
-    const node = this.#nodeFactory.create(options);
+    const node = this.nodeFactory.create(options);
     this.nodes.push(node);
   }
 
