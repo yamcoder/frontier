@@ -47,8 +47,6 @@ export class Board {
   mount(element: HTMLElement): void {
     this.context.canvas.style.display = 'block';
     this.context.canvas.style.backgroundColor = COLOR_BOARD_BACKGROUND;
-    this.context.canvas.width = element.clientWidth;
-    this.context.canvas.height = element.clientHeight;
 
     this.observeResize(element);
 
