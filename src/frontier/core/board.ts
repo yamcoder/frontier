@@ -51,9 +51,8 @@ export class Board {
     this.context.canvas.height = element.clientHeight;
 
     this.observeResize(element);
-    element.append(this.context.canvas);
 
-    this.context.draw();
+    element.append(this.context.canvas);
   }
 
   private observeResize(element: HTMLElement): void {
